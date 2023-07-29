@@ -48,3 +48,7 @@ If you still have troubles, see
 [development instructions for headless-gl](https://github.com/stackgl/headless-gl#how-should-i-set-up-a-development-environment-for-headless-gl)
 and
 [compiling instructions for node-canvas](https://github.com/Automattic/node-canvas#compiling).
+
+## License
+
+[GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
