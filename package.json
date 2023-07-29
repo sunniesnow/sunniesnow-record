@@ -1,0 +1,37 @@
+{
+	"name": "sunniesnow-record",
+	"version": "0.1.0",
+	"description": "A CLI tool to render a Sunniesnow chart into a video.",
+	"homepage": "https://github.com/sunniesnow/sunniesnow-record",
+	"engines": {
+		"node": ">=12.0.0"
+	},
+	"bugs": {
+		"url": "https://github.com/sunniesnow/sunniesnow-record/issues",
+		"email": "ulysseszhan@gmail.com"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Ulysses Zhan",
+		"email": "ulysseszhan@gmail.com",
+		"url": "https://ulysseszh.github.io"
+	},
+	"main": "./record.mjs",
+	"bin": {
+		"sunniesnow-record": "./cli.mjs"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sunniesnow/sunniesnow-record.git"
+	},
+	"dependencies": {
+		"@pixi/node": "7.2.0",
+		"audio-decode": "^2.1.4",
+		"dompurify": "^3.0.5",
+		"jszip": "github:UlyssesZh/jszip#fix-node-blob",
+		"marked": "^5.1.1",
+		"mime": "^3.0.0",
+		"minimist": "^1.2.8",
+		"web-audio-engine": "^0.13.4"
+	}
+}
