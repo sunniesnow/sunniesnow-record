@@ -3,7 +3,7 @@ import JSZip from 'jszip';
 import { marked } from 'marked';
 import * as DOMPurify from 'dompurify';
 import mime from 'mime';
-import { RenderingAudioContext } from 'web-audio-engine';
+import { AudioContext, OfflineAudioContext } from 'node-web-audio-api';
 import audioDecode from 'audio-decode';
 
 import path from 'path';
@@ -20,7 +20,6 @@ function patchedFetch(url, options) {
 }
 PIXI.settings.ADAPTER.fetch = patchedFetch;
 PIXI.NodeAdapter.fetch = patchedFetch;
-await PIXI.Assets.init();
 const Sunniesnow = {};
 const context = vm.createContext(Object.create(globalThis, Object.getOwnPropertyDescriptors({
 	Sunniesnow,
@@ -29,7 +28,8 @@ const context = vm.createContext(Object.create(globalThis, Object.getOwnProperty
 	marked,
 	DOMPurify,
 	mime,
-	AudioContext: RenderingAudioContext,
+	AudioContext,
+	OfflineAudioContext,
 	audioDecode,
 	fetch: patchedFetch,
 	require: module.createRequire(import.meta.url)
@@ -43,5 +43,7 @@ for (const [_, js] of head.matchAll(/<script src="(js\/.+?)"><\/script>/g)) {
 	script.runInContext(context);
 }
 Sunniesnow.PixiPatches.apply();
+
+await PIXI.Assets.init();
 
 export default Sunniesnow;

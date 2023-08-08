@@ -3,8 +3,13 @@ import mime from 'mime';
 import fs from 'fs';
 import path from 'path';
 import child_process from 'child_process';
+import module from 'module';
 
 import Sunniesnow from './sunniesnow.mjs';
+
+const require = module.createRequire(import.meta.url);
+
+const audioBufferToWav = require('audiobuffer-to-wav');
 
 Sunniesnow.Record = class Record {
 
@@ -290,10 +295,10 @@ See https://sunniesnow.github.io/game/help/ about following options:
 
 	async exportAudio() {
 		this.println('Exporting audio...');
-		const arrayBuffer = await Sunniesnow.Audio.context.encodeAudioData(Sunniesnow.Audio.context.exportAsAudioData());
+		const audioBuffer = await Sunniesnow.Audio.context.startRendering();
 		fs.writeFileSync(
 			path.join(this.tempDir, 'audio.wav'),
-			Buffer.from(arrayBuffer)
+			Buffer.from(audioBufferToWav(audioBuffer))
 		);
 	}
 
@@ -304,6 +309,7 @@ See https://sunniesnow.github.io/game/help/ about following options:
 			'-i', path.join(this.tempDir, 'audio.wav'),
 			'-y',
 			'-vf', 'vflip',
+			'-shortest',
 			this.output
 		]);
 		await new Promise(resolve => this.ffmpeg.on('exit', resolve));
@@ -311,6 +317,7 @@ See https://sunniesnow.github.io/game/help/ about following options:
 
 	async end() {
 		this.println('');
+		this.println('Waiting for FFmpeg to finish eating the video...')
 		await new Promise(resolve => this.videoPipe.end(resolve));
 		await new Promise(resolve => this.videoGeneratingFfmpeg.on('exit', resolve));
 	}
@@ -322,7 +329,7 @@ See https://sunniesnow.github.io/game/help/ about following options:
 		while (!firstResultFrame || firstResultFrame && (frameCount - firstResultFrame) / Sunniesnow.record.fps < Sunniesnow.record.resultsDuration) {
 			const currentTime = frameCount / this.fps;
 			this.reprint(`Rendering ${currentTime.toFixed(2)}s...`)
-			Sunniesnow.Audio.context.processTo(currentTime);
+			Sunniesnow.Audio.currentTime = currentTime;
 			Sunniesnow.game.app.ticker.update(currentTime * 1000);
 			await this.screenshot();
 			if (Sunniesnow.game.level.finished && !firstResultFrame) {
