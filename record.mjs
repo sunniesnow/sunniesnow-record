@@ -24,6 +24,9 @@ Sunniesnow.Record = class Record {
 		offset: 0,
 		speed: 2,
 		noteSize: 1,
+		noEarlyDrag: false,
+		directionInsensitiveFlick: false,
+		lockingHold: false,
 		background: 'online',
 		backgroundOnline: 'default.svg',
 		backgroundFromLevel: '',
@@ -340,6 +343,7 @@ See https://sunniesnow.github.io/game/help/ about following options:
 		await this.end();
 		await this.exportAudio();
 		await this.runFfmpeg();
+		this.println('Done!');
 	}
 
 	static async run(options) {
