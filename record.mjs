@@ -81,6 +81,7 @@ Sunniesnow.Record = class Record {
 		antialias: true,
 		powerPreference: 'default',
 		debug: false,
+		suppressWarnings: false
 	}
 
 	static DEFAULT_SETTINGS = {
