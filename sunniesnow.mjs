@@ -12,16 +12,40 @@ import vm from 'vm';
 import module from 'module';
 import url from 'url';
 
-function patchedFetch(url, options) {
-	options = Object.assign({}, options);
-	options.headers = Object.assign({}, options.headers);
-	options.headers['Origin'] = 'https://sunniesnow.github.io';
-	return fetch(url, options);
+const dir = path.dirname(url.fileURLToPath(import.meta.url));
+function patchedFetch(fetchUrl, options) {
+	let isFile = false;
+	try {
+		if (new URL(fetchUrl).protocol === 'file:') {
+			isFile = true;
+			fetchUrl = url.fileURLToPath(fetchUrl);
+		}
+	} catch (e) {
+		isFile = true;
+		fetchUrl = path.join(dir, path.resolve('/game', fetchUrl));
+	}
+	if (isFile) {
+		return new Promise((resolve, reject) => {
+			fs.readFile(fetchUrl, (err, data) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(new Response(data));
+				}
+			});
+		});
+	} else {
+		options = Object.assign({}, options);
+		options.headers = Object.assign({}, options.headers);
+		options.headers['Origin'] = 'https://sunniesnow.github.io';
+		return fetch(fetchUrl, options);
+	}
 }
 PIXI.settings.ADAPTER.fetch = patchedFetch;
 PIXI.NodeAdapter.fetch = patchedFetch;
 const Sunniesnow = {};
-const context = vm.createContext(Object.create(globalThis, Object.getOwnPropertyDescriptors({
+
+const polyfill = {
 	Sunniesnow,
 	PIXI,
 	JSZip,
@@ -33,15 +57,17 @@ const context = vm.createContext(Object.create(globalThis, Object.getOwnProperty
 	audioDecode,
 	fetch: patchedFetch,
 	require: module.createRequire(import.meta.url)
-})));
-
-const dir = path.dirname(url.fileURLToPath(import.meta.url));
-const head = fs.readFileSync(path.join(dir, 'game/_head.html')).toString();
-for (const [_, js] of head.matchAll(/<script src="(js\/.+?)"><\/script>/g)) {
-	const filename = path.resolve(path.join(dir, 'game', js));
+};
+const context = vm.createContext(Object.create(globalThis, Object.getOwnPropertyDescriptors(polyfill)));
+function runScript(filename) {
+	filename = path.resolve(dir, filename);
 	const script = new vm.Script(fs.readFileSync(filename).toString(), {filename});
 	script.runInContext(context);
 }
+runScript('game/js/utils/Utils.js');
+runScript('game/js/ScriptsLoader.js');
+Sunniesnow.ScriptsLoader.setPolyfill(polyfill);
+await Sunniesnow.ScriptsLoader.runSiteScripts();
 Sunniesnow.PixiPatches.apply();
 
 await PIXI.Assets.init();
