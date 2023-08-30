@@ -17,11 +17,17 @@ Sunniesnow.Record = class Record {
 		levelFile: 'upload',
 		levelFileOnline: '',
 		levelFileUpload: null,
+
 		musicSelect: '',
 		chartSelect: '',
+
 		judgementWindows: 'loose',
 		noteHitSize: 3,
 		offset: 0,
+		noEarlyDrag: false,
+		directionInsensitiveFlick: false,
+		lockingHold: false,
+
 		speed: 2,
 		noteSize: 1,
 		noEarlyDrag: false,
@@ -42,6 +48,11 @@ Sunniesnow.Record = class Record {
 		hudTopCenter: 'combo',
 		hudTopLeft: 'title',
 		hudTopRight: 'score',
+		touchEffects: false,
+		reverseNoteOrder: false,
+		hideTipPoints: false,
+		hideFxInFront: false,
+
 		se: 'default',
 		seOnline: '',
 		seUpload: null,
@@ -49,14 +60,17 @@ Sunniesnow.Record = class Record {
 		volumeMusic: 1,
 		seWithMusic: true,
 		delay: 0,
+
 		autoplay: true,
 		gameSpeed: 1,
 		horizontalFlip: false,
 		verticalFlip: false,
 		start: 0,
 		end: 1,
-		resumePreperationTime: 1,
-		beginningPreperationTime: 1,
+		resumePreparationTime: 1,
+		beginningPreparationTime: 1,
+		notesPriorityOverPause: false,
+
 		enableKeyboard: true,
 		keyboardWholeScreen: false,
 		excludeKeys: [],
@@ -70,6 +84,7 @@ Sunniesnow.Record = class Record {
 		enableTouchscreen: true,
 		touchscreenWholeScreen: false,
 		touchPause: true,
+
 		width: 1920,
 		height: 1080,
 		fullscreenOnStart: true,
@@ -107,6 +122,9 @@ Sunniesnow.Record = class Record {
 		hudTopCenter: 'combo',
 		hudTopLeft: 'title',
 		hudTopRight: 'score',
+		reverseNoteOrder: false,
+		hideTipPoints: false,
+		hideFxInFront: false,
 		se: 'default',
 		seOnline: '',
 		seUpload: null,
@@ -118,7 +136,7 @@ Sunniesnow.Record = class Record {
 		verticalFlip: false,
 		start: 0,
 		end: 1,
-		beginningPreperationTime: 1,
+		beginningPreparationTime: 1,
 		width: 1920,
 		height: 1080,
 		plugin: [],
@@ -131,7 +149,8 @@ Sunniesnow.Record = class Record {
 		suppressWarnings: false,
 		tempDir: '/tmp',
 		output: 'output.mkv',
-		resultsDuration: 1
+		resultsDuration: 1,
+		waitForMusic: false
 	}
 
 	static HELP_MESSAGE = `Usage: sunniesnow-record [options]
@@ -143,6 +162,7 @@ Sunniesnow.Record = class Record {
 --temp-dir=/tmp       directory to store temporary files
 --output=output.mkv   output file name
 --results-duration=1  duration of the results screen in seconds
+--wait-for-music      do not end the video until music finishes
 
 See https://sunniesnow.github.io/game/help/ about following options:
 --level-file
@@ -167,6 +187,9 @@ See https://sunniesnow.github.io/game/help/ about following options:
 --hud-top-center
 --hud-top-left
 --hud-top-right
+--reverse-note-order
+--hide-tip-points
+--hide-fx-in-front
 --se
 --se-online
 --se-upload
@@ -178,7 +201,7 @@ See https://sunniesnow.github.io/game/help/ about following options:
 --vertical-flip
 --start
 --end
---beginning-preperation-time
+--beginning-preparation-time
 --width
 --height
 --plugin
@@ -186,14 +209,14 @@ See https://sunniesnow.github.io/game/help/ about following options:
 --plugin-upload`
 
 	static toBlob(obj) {
+		if (typeof obj === 'string') {
+			return new Blob([fs.readFileSync(obj)], {type: mime.getType(obj)});
+		}
 		if (obj instanceof Array) {
 			return obj.map(this.toBlob.bind(this));
 		}
 		if (obj instanceof Blob) {
 			return obj;
-		}
-		if (obj instanceof String) {
-			return new Blob([fs.readFileSync(obj)], {type: mime.getType(obj)});
 		}
 		return new Blob([obj]);
 	}
@@ -230,6 +253,9 @@ See https://sunniesnow.github.io/game/help/ about following options:
 		this.output = options.output;
 		delete options.output;
 
+		this.waitForMusic = options.waitForMusic;
+		delete options.waitForMusic;
+
 		this.constructor.replaceWithBlob(options);
 
 		this.gameSettings = options;
@@ -248,7 +274,7 @@ See https://sunniesnow.github.io/game/help/ about following options:
 			'-nostdin',
 			'-c:v', 'copy',
 			path.join(this.tempDir, 'video.mkv')
-		]);
+		], {stdio: ['pipe', 'inherit', 'inherit']});
 		this.videoPipe = this.videoGeneratingFfmpeg.stdin;
 		this.tempPixels = new Uint8Array(this.width * this.height * 4);
 	}
@@ -294,7 +320,9 @@ See https://sunniesnow.github.io/game/help/ about following options:
 	async screenshot() {
 		const gl = Sunniesnow.game.canvas._gl;
 		gl.readPixels(0, 0, this.width, this.height, gl.RGBA, gl.UNSIGNED_BYTE, this.tempPixels);
+		this.print('  Write frame start')
 		await new Promise(resolve => this.videoPipe.write(this.tempPixels, resolve));
+		this.print('  Write frame end')
 	}
 
 	async exportAudio() {
@@ -312,10 +340,11 @@ See https://sunniesnow.github.io/game/help/ about following options:
 			'-i', path.join(this.tempDir, 'video.mkv'),
 			'-i', path.join(this.tempDir, 'audio.wav'),
 			'-y',
+			'-nostdin',
 			'-vf', 'vflip',
 			'-shortest',
 			this.output
-		]);
+		], {stdio: 'inherit'});
 		await new Promise(resolve => this.ffmpeg.on('exit', resolve));
 	}
 
@@ -330,7 +359,13 @@ See https://sunniesnow.github.io/game/help/ about following options:
 		await this.load();
 		let frameCount = 0;
 		let firstResultFrame;
-		while (!firstResultFrame || firstResultFrame && (frameCount - firstResultFrame) / Sunniesnow.record.fps < Sunniesnow.record.resultsDuration) {
+		while (true) {
+			let breakCondition = !!firstResultFrame;
+			breakCondition &&= (frameCount - firstResultFrame) / this.fps > this.resultsDuration
+			breakCondition &&= !this.waitForMusic || Sunniesnow.Music.finished
+			if (breakCondition) {
+				break;
+			}
 			const currentTime = frameCount / this.fps;
 			this.reprint(`Rendering ${currentTime.toFixed(2)}s...`)
 			Sunniesnow.Audio.currentTime = currentTime;
