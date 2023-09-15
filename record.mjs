@@ -283,8 +283,7 @@ See https://sunniesnow.github.io/game/help/ about following options:
 			'-i', 'pipe:0',
 			// output
 			'-y',
-			'-nostdin',
-			'-c:v', 'copy',
+			'-vf', 'vflip',
 			path.join(this.tempDir, 'video.mkv')
 		], {stdio: ['pipe', 'inherit', 'inherit']});
 		this.videoPipe = this.videoGeneratingFfmpeg.stdin;
@@ -332,9 +331,7 @@ See https://sunniesnow.github.io/game/help/ about following options:
 	async screenshot() {
 		const gl = Sunniesnow.game.canvas._gl;
 		gl.readPixels(0, 0, this.width, this.height, gl.RGBA, gl.UNSIGNED_BYTE, this.tempPixels);
-		this.print('  Write frame start')
 		await new Promise(resolve => this.videoPipe.write(this.tempPixels, resolve));
-		this.print('  Write frame end')
 	}
 
 	async exportAudio() {
@@ -353,7 +350,9 @@ See https://sunniesnow.github.io/game/help/ about following options:
 			'-i', path.join(this.tempDir, 'audio.wav'),
 			'-y',
 			'-nostdin',
-			'-vf', 'vflip',
+			'-map', '0:v',
+			'-map', '1:a',
+			'-c:v', 'copy',
 			'-shortest',
 			this.output
 		], {stdio: 'inherit'});
@@ -379,7 +378,7 @@ See https://sunniesnow.github.io/game/help/ about following options:
 				break;
 			}
 			const currentTime = frameCount / this.fps;
-			this.reprint(`Rendering ${currentTime.toFixed(2)}s...`)
+			//this.reprint(`Rendering ${currentTime.toFixed(2)}s...`)
 			Sunniesnow.Audio.currentTime = currentTime;
 			Sunniesnow.game.app.ticker.update(currentTime * 1000);
 			await this.screenshot();
