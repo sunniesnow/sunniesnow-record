@@ -68,6 +68,7 @@ Sunniesnow.Record = class Record {
 		delay: 0,
 
 		autoplay: true,
+		chartOffset: 0,
 		gameSpeed: 1,
 		horizontalFlip: false,
 		verticalFlip: false,
@@ -143,6 +144,7 @@ Sunniesnow.Record = class Record {
 		volumeSe: 1,
 		volumeMusic: 1,
 		delay: 0,
+		chartOffset: 0,
 		gameSpeed: 1,
 		horizontalFlip: false,
 		verticalFlip: false,
@@ -199,15 +201,22 @@ See https://sunniesnow.github.io/game/help/ about following options:
 --hud-top-center
 --hud-top-left
 --hud-top-right
+--double-line-tap
+--double-line-hold
+--double-line-drag
+--double-line-flick
+--hide-fx-in-front
+--hide-fx-perfect
+--hide-fx-hold-start
 --reverse-note-order
 --hide-tip-points
---hide-fx-in-front
 --se
 --se-online
 --se-upload
 --volume-se
 --volume-music
 --delay
+--chart-offset
 --game-speed
 --horizontal-flip
 --vertical-flip
