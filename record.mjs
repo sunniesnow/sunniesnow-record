@@ -22,8 +22,10 @@ Sunniesnow.Record = class Record {
 		chartSelect: '',
 
 		judgementWindows: 'loose',
+		// judgementWindowsCustom...
 		noteHitSize: 3,
 		offset: 0,
+		lyrica5: true,
 		noEarlyDrag: false,
 		directionInsensitiveFlick: false,
 		lockingHold: false,
@@ -112,6 +114,7 @@ Sunniesnow.Record = class Record {
 		levelFileUpload: null,
 		musicSelect: '',
 		chartSelect: '',
+		lyrica5: true,
 		speed: 2,
 		noteSize: 1,
 		background: 'online',
@@ -184,6 +187,7 @@ See https://sunniesnow.github.io/game/help/ about following options:
 --level-file-upload
 --music-select
 --chart-select
+--lyrica-5
 --speed
 --note-size
 --background
