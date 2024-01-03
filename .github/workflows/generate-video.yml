@@ -27,8 +27,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
-      - run: echo 'Node.js version ${{ steps.setup-node.outputs.node-version }}'
-      - run: echo 'cache-hit: ${{ steps.setup-node.outputs.cache-hit }}'
+      - run: "echo 'Node.js version ${{ steps.setup-node.outputs.node-version }}'"
+      - run: "echo 'cache-hit: ${{ steps.setup-node.outputs.cache-hit }}'"
       - name: Install build dependencies (Ubuntu)
         if: matrix.os == 'ubuntu-latest' && !steps.setup-node.outputs.cache-hit
         # https://github.com/stackgl/headless-gl?tab=readme-ov-file#ubuntudebian
