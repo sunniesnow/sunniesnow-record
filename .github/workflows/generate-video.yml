@@ -56,8 +56,14 @@ jobs:
         with:
           path: ${{ github.workspace }}/node_modules
           key: ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('**/package-lock.json') }}
-      - name: Generate video
+      - name: Generate videos (Ubuntu)
+        run: | # https://github.com/pixijs/node?tab=readme-ov-file#error-unable-to-auto-detect-a-suitable-renderer
+          sudo apt-get install xvfb
+          xvfb-run node cli.mjs --level-file online --level-file-online sunniesnow-sample --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
+        if: matrix.os == 'ubuntu-latest'
+      - name: Generate videos (Windows)
         run: node cli.mjs --level-file online --level-file-online sunniesnow-sample --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
+        if: matrix.os == 'windows-latest'
       - name: Upload generated videos
         uses: actions/upload-artifact@v4
         with:
