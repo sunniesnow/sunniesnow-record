@@ -28,7 +28,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
       - name: Install build dependencies (Ubuntu)
-        if: matrix.os == 'ubuntu-latest' && !steps.setup-node.outputs.cache-hit
+        if: matrix.os == 'ubuntu-latest'
+        # && !steps.setup-node.outputs.cache-hit
         # https://github.com/stackgl/headless-gl?tab=readme-ov-file#ubuntudebian
         run: sudo apt-get install -y build-essential libxi-dev libglu1-mesa-dev libglew-dev pkg-config
       - name: npm install
