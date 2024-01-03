@@ -11,8 +11,8 @@ jobs:
     name: Generate videos
     strategy:
       matrix:
-        node-version: ['18', '20.6', '21']
-        os: [ubuntu-latest] # [ubuntu-latest, windows-latest]
+        node-version: [18, 20] # ['18', '20.6', '21']
+        os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -31,7 +31,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: ${{ github.workspace }}/node_modules
-          key: ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('package-lock.json') }}
       - name: Install build dependencies (Ubuntu)
         if: matrix.os == 'ubuntu-latest' && steps.cache-restore.outputs.cache-hit != 'true'
         # https://github.com/stackgl/headless-gl?tab=readme-ov-file#ubuntudebian
@@ -55,7 +55,7 @@ jobs:
         if: steps.cache-restore.outputs.cache-hit != 'true'
         with:
           path: ${{ github.workspace }}/node_modules
-          key: ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('package-lock.json') }}
       - name: Generate videos (Ubuntu)
         run: | # https://github.com/pixijs/node?tab=readme-ov-file#error-unable-to-auto-detect-a-suitable-renderer
           sudo apt-get install xvfb
