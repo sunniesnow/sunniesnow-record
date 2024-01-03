@@ -1,0 +1,53 @@
+name: Generate video
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+jobs:
+  generate:
+    name: Generate videos
+    strategy:
+      matrix:
+        node-version: [18.x, 20.6.x, 21.x]
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: FedericoCarboni/setup-ffmpeg@v2
+        id: setup-ffmpeg
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: npm install
+      - name: Generate video
+        run: node cli.mjs --level-file online --level-file-online sunniesnow-sample --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
+      - name: Upload generated videos
+        uses: actions/upload-artifact@v4
+        with:
+          name: output-${{ matrix.node-version }}-${{ matrix.os }}
+          path: output
+  push:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    name: Push generated videos
+    needs: generate
+    steps:
+      - uses: actions/download-artifact@v4
+        name: Download generated videos
+        with:
+          pattern: output-*
+          path: output
+          merge-multiple: true
+      - name: Push generated videos
+        uses: crazy-max/ghaction-github-pages@v3
+        with:
+          target_branch: gh-action-output
+          build_dir: output
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

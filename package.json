@@ -4,7 +4,7 @@
 	"description": "A CLI tool to render a Sunniesnow chart into a video.",
 	"homepage": "https://github.com/sunniesnow/sunniesnow-record",
 	"engines": {
-		"node": ">=20.6.0"
+		"node": ">=20.6.0 || ^18"
 	},
 	"enginesComments": {
 		"node": "20.5.0 has this bug: https://github.com/nodejs/node/issues/49062"

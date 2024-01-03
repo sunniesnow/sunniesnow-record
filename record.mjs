@@ -358,6 +358,7 @@ See https://sunniesnow.github.io/game/help/ about following options:
 
 	async runFfmpeg() {
 		this.println('Combining video and audio...');
+		fs.mkdirSync(path.dirname(this.output), {recursive: true});
 		this.ffmpeg = child_process.spawn('ffmpeg', [
 			'-i', path.join(this.tempDir, 'video.mkv'),
 			'-i', path.join(this.tempDir, 'audio.wav'),
