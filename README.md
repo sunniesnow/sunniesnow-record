@@ -22,13 +22,15 @@ Run the following command to get help:
 sunniesnow-record --help
 ```
 
-Here is a usecase example:
+Here is a usage example:
 
 ```shell
 sunniesnow-record --level-file online --level-file-online sunniesnow-sample --output test.mkv
 ```
 
 ## Troubleshoot
+
+### Error messages about `canvas.node` or `webgl.node`
 
 If you see error messages about `canvas.node` or `webgl.node`,
 you may need to rebuild the native modules.
@@ -48,6 +50,19 @@ If you still have troubles, see
 [development instructions for headless-gl](https://github.com/stackgl/headless-gl#how-should-i-set-up-a-development-environment-for-headless-gl)
 and
 [compiling instructions for node-canvas](https://github.com/Automattic/node-canvas#compiling).
+
+### `no such file or directory` when installed from Git source
+
+If you installed this package from Git source (e.g. `npm i github:sunniesnow/sunniesnow-record`),
+you may see an error message like this when using this package:
+
+```plain
+Error: ENOENT: no such file or directory, open '.../node_modules/sunniesnow-record/game/js/utils/Utils.js'
+```
+
+This is due to an [npm bug](https://github.com/npm/cli/issues/2774).
+To work around this, clone this repo recursively,
+and use the local file system as the package source.
 
 ## License
 
