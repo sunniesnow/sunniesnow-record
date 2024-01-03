@@ -19,7 +19,7 @@ and [Node.js](https://nodejs.org/) (20.6 or later).
 Then, run the following command:
 
 ```shell
-npm install -g sunniesnow-record
+npm install -g sunniesnow-record --legacy-peer-deps
 ```
 
 ## Usage
@@ -38,6 +38,18 @@ sunniesnow-record --level-file online --level-file-online sunniesnow-sample --ou
 
 ## Troubleshoot
 
+### `No module named 'distutils'` on Python 3.12 or later
+
+You may see an error message about `ModuleNotFoundError: No module named 'distutils'`
+reported by node-gyp.
+This happens when your Python version is 3.12 or later. You need to run
+
+```shell
+pip install setuptools
+```
+
+Replace `pip` with `python3 -m pip` if necessary.
+
 ### Error messages about `canvas.node` or `webgl.node`
 
 If you see error messages about `canvas.node` or `webgl.node`,
@@ -54,7 +66,7 @@ and then run the following command (it may take several minutes):
 env --chdir=$(npm root -g)/sunniesnow-record npm rebuild canvas gl --build-from-source
 ```
 
-If you still have troubles, see
+If you have troubles building them, see
 [development instructions for headless-gl](https://github.com/stackgl/headless-gl#how-should-i-set-up-a-development-environment-for-headless-gl)
 and
 [compiling instructions for node-canvas](https://github.com/Automattic/node-canvas#compiling).
