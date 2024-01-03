@@ -2,14 +2,16 @@ name: Generate video
 on:
   workflow_dispatch:
   push:
+    branches: [master]
   pull_request:
+    branches: [master]
 
 jobs:
   generate:
     name: Generate videos
     strategy:
       matrix:
-        node-version: [18.x, 20.6.x, 21.x]
+        node-version: ['18', '20.6', '21']
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -19,18 +21,24 @@ jobs:
           submodules: recursive
       - uses: FedericoCarboni/setup-ffmpeg@v2
         id: setup-ffmpeg
-      - name: Use Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        id: setup-node
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install dependencies
+          cache: npm
+      - name: Install build dependencies (Ubuntu)
+        if: matrix.os == 'ubuntu-latest' && !steps.setup-node.outputs.cache-hit
+        # https://github.com/stackgl/headless-gl?tab=readme-ov-file#ubuntudebian
+        run: sudo apt-get install -y build-essential libxi-dev libglu1-mesa-dev libglew-dev pkg-config
+      - name: npm install
         run: npm install
       - name: Generate video
         run: node cli.mjs --level-file online --level-file-online sunniesnow-sample --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
       - name: Upload generated videos
         uses: actions/upload-artifact@v4
         with:
-          name: output-${{ matrix.node-version }}-${{ matrix.os }}
+          name: output-${{ steps.setup-node.outputs.node-version }}-${{ runner.os }}
           path: output
   push:
     permissions: write-all
