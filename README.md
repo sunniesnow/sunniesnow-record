@@ -19,7 +19,7 @@ and [Node.js](https://nodejs.org/) (20.6 or later).
 Then, run the following command:
 
 ```shell
-npm install -g sunniesnow-record --legacy-peer-deps
+npm install -g sunniesnow-record
 ```
 
 ## Usage
@@ -83,6 +83,15 @@ Error: ENOENT: no such file or directory, open '.../node_modules/sunniesnow-reco
 This is due to an [npm bug](https://github.com/npm/cli/issues/2774).
 To work around this, clone this repo recursively,
 and use the local file system as the package source.
+
+### Wrong font for English characters
+
+This is due to a [bug in node-canvas](https://github.com/Automattic/node-canvas/issues/2332).
+To work around this, rebuild node-canvas from source:
+
+```shell
+env --chdir=$(npm root -g)/sunniesnow-record npm rebuild canvas --build-from-source
+```
 
 ## License
 

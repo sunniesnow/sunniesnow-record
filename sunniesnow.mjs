@@ -72,6 +72,6 @@ Sunniesnow.ScriptsLoader.setPolyfill(polyfill);
 await Sunniesnow.ScriptsLoader.runSiteScripts();
 Sunniesnow.PixiPatches.apply();
 
-await PIXI.Assets.init();
+await PIXI.Assets.init({skipDetections: true}); // https://github.com/pixijs/node/issues/6
 
 export default Sunniesnow;

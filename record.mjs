@@ -343,6 +343,7 @@ See https://sunniesnow.github.io/game/help/ about following options:
 
 	async screenshot() {
 		const gl = Sunniesnow.game.canvas._gl;
+		// use RGBA instead of RGB because of https://github.com/stackgl/headless-gl/issues/265
 		gl.readPixels(0, 0, this.width, this.height, gl.RGBA, gl.UNSIGNED_BYTE, this.tempPixels);
 		await new Promise(resolve => this.videoPipe.write(this.tempPixels, resolve));
 	}
