@@ -12,13 +12,20 @@ jobs:
     strategy:
       matrix:
         node-version: [18, 20] # ['18', '20.6', '21']
-        os: [ubuntu-latest] # [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: recursive
+      - name: Get public IP
+        id: ip
+        uses: haythem/public-ip@v1.3
+      - name: Print public IP
+        run: |
+          echo ${{ steps.ip.outputs.ipv4 }}}
+          echo ${{ steps.ip.outputs.ipv6 }}}
       - uses: FedericoCarboni/setup-ffmpeg@v2
         id: setup-ffmpeg
       - name: Set up Node.js
@@ -59,10 +66,10 @@ jobs:
       - name: Generate videos (Ubuntu)
         run: | # https://github.com/pixijs/node?tab=readme-ov-file#error-unable-to-auto-detect-a-suitable-renderer
           sudo apt-get install xvfb
-          xvfb-run node cli.mjs --level-file online --level-file-online sunniesnow-sample --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
+          xvfb-run node --inspect=0.0.0.0:9229 cli.mjs --level-file online --level-file-online sunniesnow-sample --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
         if: matrix.os == 'ubuntu-latest'
       - name: Generate videos (Windows)
-        run: node cli.mjs --level-file online --level-file-online sunniesnow-sample --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
+        run: node --inspect=0.0.0.0:9229 cli.mjs --level-file online --level-file-online sunniesnow-sample --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
         if: matrix.os == 'windows-latest'
       - name: Upload generated videos
         uses: actions/upload-artifact@v4
