@@ -22,7 +22,9 @@ function patchedFetch(fetchUrl, options) {
 		}
 	} catch (e) {
 		isFile = true;
-		fetchUrl = path.join(dir, path.resolve('/game', fetchUrl));
+		// use this regex to fuck Windows
+		const relativePath = path.resolve("/game", fetchUrl).replace(/^\w:\\/, "");
+		fetchUrl = path.join(dir, relativePath);
 	}
 	if (isFile) {
 		return new Promise((resolve, reject) => {
