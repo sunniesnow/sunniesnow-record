@@ -24,8 +24,8 @@ jobs:
         uses: haythem/public-ip@v1.3
       - name: Print public IP
         run: |
-          echo ${{ steps.ip.outputs.ipv4 }}}
-          echo ${{ steps.ip.outputs.ipv6 }}}
+          echo ${{ steps.ip.outputs.ipv4 }}
+          echo ${{ steps.ip.outputs.ipv6 }}
       - uses: FedericoCarboni/setup-ffmpeg@v2
         id: setup-ffmpeg
       - name: Set up Node.js
