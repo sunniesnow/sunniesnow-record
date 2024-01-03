@@ -26,14 +26,36 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: npm
+      - name: Restore cache
+        id: cache-restore
+        uses: actions/cache/restore@v3
+        with:
+          path: ${{ github.workspace }}/node_modules
+          key: ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('**/package-lock.json') }}
       - name: Install build dependencies (Ubuntu)
-        if: matrix.os == 'ubuntu-latest' && steps.setup-node.outputs.cache-hit == 'false'
+        if: matrix.os == 'ubuntu-latest' && steps.cache-restore.outputs.cache-hit != 'true'
         # https://github.com/stackgl/headless-gl?tab=readme-ov-file#ubuntudebian
         # https://github.com/Automattic/node-canvas#compiling
         run: sudo apt-get install -y build-essential libxi-dev libglu1-mesa-dev libglew-dev pkg-config libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
-      - name: npm install
-        run: npm install && npm rebuild canvas gl --build-from-source
+      - name: Install build dependencies (Windows)
+        if: matrix.os == 'windows-latest' && steps.cache-restore.outputs.cache-hit != 'true'
+        # https://github.com/Automattic/node-canvas/wiki/Installation:-Windows#install-manually
+        run: |
+          New-Item -Name temp -ItemType Directory
+          Invoke-WebRequest https://ftp.gnome.org/pub/GNOME/binaries/win64/gtk+/2.22/gtk+-bundle_2.22.1-20101229_win64.zip -OutFile .\temp\gtk.zip
+          Expand-Archive .\temp\gtk.zip -DestinationPath C:\GTK
+          Invoke-WebRequest https://sourceforge.net/projects/libjpeg-turbo/files/2.1.5.1/libjpeg-turbo-2.1.5.1-vc64.exe/download -OutFile .\temp\libjpeg-turbo.exe
+          .\temp\libjpeg-turbo.exe /S
+      - run: npm install
+      - name: Build headless-gl and node-canvas
+        run: npm rebuild canvas gl --build-from-source
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+      - name: Cache save
+        uses: actions/cache/save@v3
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+        with:
+          path: ${{ github.workspace }}/node_modules
+          key: ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('**/package-lock.json') }}
       - name: Generate video
         run: node cli.mjs --level-file online --level-file-online sunniesnow-sample --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
       - name: Upload generated videos
