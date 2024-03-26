@@ -1,6 +1,11 @@
 name: Generate video
 on:
   workflow_dispatch:
+    inputs:
+      tmate:
+        description: 'Start a tmate session'
+        default: 'false'
+        required: false
   push:
     branches: [master]
   pull_request:
@@ -29,6 +34,7 @@ jobs:
       - uses: mxschmitt/action-tmate@v3
         with:
           detached: true
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.tmate == 'true' }}
       - name: Restore cache
         id: cache-restore
         uses: actions/cache/restore@v3
