@@ -1,6 +1,6 @@
 {
 	"name": "sunniesnow-record",
-	"version": "0.3.3",
+	"version": "0.4.0",
 	"description": "A CLI tool to render a Sunniesnow chart into a video.",
 	"homepage": "https://github.com/sunniesnow/sunniesnow-record",
 	"engines": {
@@ -28,7 +28,7 @@
 		"url": "https://github.com/sunniesnow/sunniesnow-record.git"
 	},
 	"dependencies": {
-		"@pixi/node": "7.2.0",
+		"@pixi/node": "7.3.0",
 		"audio-decode": "^2.1.4",
 		"audiobuffer-to-wav": "^1.0.0",
 		"dompurify": "^3.0.5",
