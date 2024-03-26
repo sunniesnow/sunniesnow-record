@@ -38,7 +38,24 @@ sunniesnow-record --level-file online --level-file-online sunniesnow-sample --ou
 
 ## Troubleshoot
 
-### `No module named 'distutils'` on Python 3.12 or later
+### `git@github.com: Permission denied (publickey)`
+
+You need to generate an SSH keypair:
+
+```shell
+ssh-keygen
+```
+
+### Wrong font for English characters
+
+This is due to a [bug in node-canvas](https://github.com/Automattic/node-canvas/issues/2332).
+To work around this, rebuild node-canvas from source:
+
+```shell
+env --chdir=$(npm root -g)/sunniesnow-record npm rebuild canvas --build-from-source
+```
+
+### `No module named 'distutils'` with Python 3.12 or later
 
 You may see an error message about `ModuleNotFoundError: No module named 'distutils'`
 reported by node-gyp.
@@ -71,7 +88,7 @@ If you have troubles building them, see
 and
 [compiling instructions for node-canvas](https://github.com/Automattic/node-canvas#compiling).
 
-### `no such file or directory` when installed from Git source
+### Cannot open `Utils.js` when installing from Git source
 
 If you installed this package from Git source (e.g. `npm i github:sunniesnow/sunniesnow-record`),
 you may see an error message like this when using this package:
@@ -83,15 +100,6 @@ Error: ENOENT: no such file or directory, open '.../node_modules/sunniesnow-reco
 This is due to an [npm bug](https://github.com/npm/cli/issues/2774).
 To work around this, clone this repo recursively,
 and use the local file system as the package source.
-
-### Wrong font for English characters
-
-This is due to a [bug in node-canvas](https://github.com/Automattic/node-canvas/issues/2332).
-To work around this, rebuild node-canvas from source:
-
-```shell
-env --chdir=$(npm root -g)/sunniesnow-record npm rebuild canvas --build-from-source
-```
 
 ## License
 

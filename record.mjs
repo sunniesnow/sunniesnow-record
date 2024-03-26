@@ -164,10 +164,11 @@ Sunniesnow.Record = class Record {
 		fps: 60,
 		quiet: false,
 		suppressWarnings: false,
-		tempDir: '/tmp',
+		tempDir: process.env.TMPDIR || process.env.TEMP || '/tmp',
 		output: 'output.mkv',
 		resultsDuration: 1,
-		waitForMusic: false
+		waitForMusic: false,
+		clean: false
 	}
 
 	static HELP_MESSAGE = `Usage: sunniesnow-record [options]
@@ -176,10 +177,12 @@ Sunniesnow.Record = class Record {
 --fps=60              frame rate of the output video
 --quiet               do not print anything to stdout
 --suppress-warnings   do not print warnings to stderr
---temp-dir=/tmp       directory to store temporary files
+--temp-dir=$TMPDIR    directory to store temporary files
+                      (default to %APPDATA_L)
 --output=output.mkv   output file name
 --results-duration=1  duration of the results screen in seconds
 --wait-for-music      do not end the video until music finishes
+--clean               do not use assets downloaded before
 
 See https://sunniesnow.github.io/game/help/ about following options:
 --level-file
