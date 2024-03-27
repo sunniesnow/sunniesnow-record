@@ -3,3 +3,5 @@
 .github
 shell.nix
 output
+.dockerignore
+Dockerfile
