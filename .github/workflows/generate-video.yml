@@ -17,35 +17,43 @@ jobs:
     strategy:
       matrix:
         node-version: [18, 20] # ['18', '20.6', '21']
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-20.04, ubuntu-22.04, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: FedericoCarboni/setup-ffmpeg@v2
+
+      - name: Set up FFmpeg
+        uses: FedericoCarboni/setup-ffmpeg@v2
         id: setup-ffmpeg
+
       - name: Set up Node.js
         id: setup-node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - uses: mxschmitt/action-tmate@v3
+
+      - name: Start tmate
+        uses: mxschmitt/action-tmate@v3
         with:
           detached: true
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.tmate == 'true' }}
+
       - name: Restore cache
         id: cache-restore
         uses: actions/cache/restore@v3
         with:
           path: ${{ github.workspace }}/node_modules
-          key: ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('package-lock.json') }}
+          key: ${{ matrix.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('package-lock.json') }}
+
       - name: Install build dependencies (Ubuntu)
-        if: matrix.os == 'ubuntu-latest' && steps.cache-restore.outputs.cache-hit != 'true'
+        if: (matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04') && steps.cache-restore.outputs.cache-hit != 'true'
         # https://github.com/stackgl/headless-gl?tab=readme-ov-file#ubuntudebian
         # https://github.com/Automattic/node-canvas#compiling
         run: sudo apt-get install -y build-essential libxi-dev libglu1-mesa-dev libglew-dev pkg-config libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+
       - name: Install build dependencies (Windows)
         if: matrix.os == 'windows-latest' && steps.cache-restore.outputs.cache-hit != 'true'
         # https://github.com/Automattic/node-canvas/wiki/Installation:-Windows#install-manually
@@ -55,29 +63,32 @@ jobs:
           Expand-Archive .\temp\gtk.zip -DestinationPath C:\GTK
           Invoke-WebRequest https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/2.1.5.1/libjpeg-turbo-2.1.5.1-vc64.exe -OutFile .\temp\libjpeg-turbo.exe
           .\temp\libjpeg-turbo.exe /S
-      - run: npm ci
+
+      - name: Run npm ci
+        run: npm ci --build-from-source
         if: steps.cache-restore.outputs.cache-hit != 'true'
-      - name: Build headless-gl and node-canvas
-        run: npm rebuild canvas gl --build-from-source
-        if: steps.cache-restore.outputs.cache-hit != 'true'
+
       - name: Cache save
         uses: actions/cache/save@v3
         if: steps.cache-restore.outputs.cache-hit != 'true'
         with:
           path: ${{ github.workspace }}/node_modules
-          key: ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('package-lock.json') }}
+          key: ${{ matrix.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('package-lock.json') }}
+
       - name: Generate videos (Ubuntu)
         run: | # https://github.com/pixijs/node?tab=readme-ov-file#error-unable-to-auto-detect-a-suitable-renderer
           sudo apt-get install xvfb
           xvfb-run node --inspect=0.0.0.0:9229 cli.mjs --level-file online --level-file-online sunniesnow-sample --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04'
+
       - name: Generate videos (Windows) # use `--background none` to avoid loading SVG: https://github.com/Automattic/node-canvas/issues/2333
         run: node --inspect=0.0.0.0:9229 cli.mjs --level-file online --level-file-online sunniesnow-sample --background none --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
         if: matrix.os == 'windows-latest'
+
       - name: Upload generated videos
         uses: actions/upload-artifact@v4
         with:
-          name: output-${{ steps.setup-node.outputs.node-version }}-${{ runner.os }}
+          name: output-${{ steps.setup-node.outputs.node-version }}-${{ matrix.os }}
           path: output
   push:
     permissions: write-all
