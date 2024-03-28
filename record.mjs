@@ -98,6 +98,7 @@ Sunniesnow.Record = class Record {
 		height: 1080,
 		fullscreenOnStart: true,
 		floatAsFullscreen: false,
+		avoidDownloadingFonts: false,
 		plugin: [],
 		pluginOnline: [],
 		pluginUpload: [],
@@ -156,6 +157,7 @@ Sunniesnow.Record = class Record {
 		beginningPreparationTime: 1,
 		width: 1920,
 		height: 1080,
+		avoidDownloadingFonts: false,
 		plugin: [],
 		pluginOnline: [],
 		pluginUpload: [],
@@ -165,7 +167,7 @@ Sunniesnow.Record = class Record {
 		quiet: false,
 		suppressWarnings: false,
 		tempDir: process.env.TMPDIR || process.env.TEMP || '/tmp',
-		output: 'output.mkv',
+		output: process.env.SUNNIESNOW_OUTPUT || 'output.mkv',
 		resultsDuration: 1,
 		waitForMusic: false,
 		clean: false
@@ -232,6 +234,7 @@ See https://sunniesnow.github.io/game/help/ about following options:
 --beginning-preparation-time
 --width
 --height
+--avoid-downloading-fonts
 --plugin
 --plugin-online
 --plugin-upload`

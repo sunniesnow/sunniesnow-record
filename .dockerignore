@@ -1,8 +1,8 @@
 .git
 .gitmodules
+.gitignore
 .github
+.npmignore
 shell.nix
+node_modules
 output
-.dockerignore
-Dockerfile
-entrypoint.sh

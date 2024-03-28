@@ -1,6 +1,6 @@
 {
 	"name": "sunniesnow-record",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"description": "A CLI tool to render a Sunniesnow chart into a video.",
 	"homepage": "https://github.com/sunniesnow/sunniesnow-record",
 	"engines": {
@@ -37,6 +37,11 @@
 		"mime": "^3.0.0",
 		"minimist": "^1.2.8",
 		"node-web-audio-api": "^0.11.0"
+	},
+	"overrides": {
+		"@pixi/node": {
+			"gl": "^8.0.2"
+		}
 	},
 	"dependenciesComments": {
 		"jszip": "The original package has this bug: https://github.com/Stuk/jszip/issues/899"

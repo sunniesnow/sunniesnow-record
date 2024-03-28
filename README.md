@@ -9,12 +9,11 @@ First, install [FFmpeg](https://ffmpeg.org/) (6.1 or later)
 and [Node.js](https://nodejs.org/) (20.6 or later).
 
 > [!NOTE]
-> On Windows, the version of FFmpeg should be at least 6.1
-> because this tool cannot generate correct videos with older versions due to a bug
-> in those versions.
+> The version of FFmpeg must not be 6.0
+> because of a known bug in that version.
 >
-> The version of Node.js should be at least 20.6.0
-> because this tool cannot run with older versions due to a bug in those versions.
+> The version of Node.js most not be between 20.0 and 20.5 (inclusive)
+> because of a known bug in those versions.
 
 Then, run the following command:
 
@@ -36,7 +35,21 @@ Here is a usage example:
 sunniesnow-record --level-file online --level-file-online sunniesnow-sample --output test.mkv
 ```
 
+## Docker image
+
+You can also use the Docker image to run this tool.
+To do this, run the following command:
+
+```shell
+docker run -v ./output:/data -i -t ulysseszhan/sunniesnow-record --level-file online --level-file-online sunniesnow-sample
+```
+
+This command will generate a video at `output/output.mkv`.
+
 ## Troubleshoot
+
+Note that you can use the [Docker image](#docker-image)
+if there are issues that you cannot resolve.
 
 ### `git@github.com: Permission denied (publickey)`
 
@@ -46,14 +59,20 @@ You need to generate an SSH keypair:
 ssh-keygen
 ```
 
-### Wrong font for English characters
+### Font rendering issues
 
-This is due to a [bug in node-canvas](https://github.com/Automattic/node-canvas/issues/2332).
+If only English characters are rendered incorrectly,
+this is due to a [bug in node-canvas](https://github.com/Automattic/node-canvas/issues/2332).
 To work around this, rebuild node-canvas from source:
 
 ```shell
 env --chdir=$(npm root -g)/sunniesnow-record npm rebuild canvas --build-from-source
 ```
+
+For other font rendering issues, you can also try rebuilding node-canvas from source.
+However, sometimes the issues are hard to fix.
+It is known that the font rendering behaviors are different
+for different versions of pangocairo and other dependencies.
 
 ### `No module named 'distutils'` with Python 3.12 or later
 
@@ -100,6 +119,18 @@ Error: ENOENT: no such file or directory, open '.../node_modules/sunniesnow-reco
 This is due to an [npm bug](https://github.com/npm/cli/issues/2774).
 To work around this, clone this repo recursively,
 and use the local file system as the package source.
+
+### Antialias does not work
+
+[Known bug](https://github.com/stackgl/headless-gl/issues/282).
+
+### `‘uintptr_t’ does not name a type`
+
+[Known bug](https://github.com/pixijs/node/issues/18).
+
+### The video only shows a static image, but audio is fine
+
+Known bug in FFmpeg 6.0. Use FFmpeg 6.1 or later.
 
 ## License
 
