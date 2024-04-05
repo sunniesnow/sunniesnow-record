@@ -290,14 +290,30 @@ See https://sunniesnow.github.io/game/help about following options:
 		this.waitForMusic = options.waitForMusic;
 		delete options.waitForMusic;
 
+		this.clean = options.clean;
+		delete options.clean;
+
+		this.ffmpeg = options.ffmpeg;
+		delete options.ffmpeg;
+
+		this.ffmpegOptions = options.ffmpegOptions;
+		delete options.ffmpegOptions;
+
 		this.constructor.replaceWithBlob(options);
 
 		this.gameSettings = options;
 	}
 
+	makeFfmpegOptions(options) {
+		if (this.ffmpegOptions) {
+			return [...this.ffmpegOptions.split(' '), ...options];
+		} else {
+			return options;
+		}
+	}
+
 	async createVideoGeneratingFfmpeg() {
-		this.videoGeneratingFfmpeg = child_process.spawn(this.ffmpeg, [
-			this.ffmpegOptions,
+		this.videoGeneratingFfmpeg = child_process.spawn(this.ffmpeg, this.makeFfmpegOptions([
 			// video input
 			'-f', 'rawvideo',
 			'-pixel_format', 'rgba',
@@ -308,7 +324,7 @@ See https://sunniesnow.github.io/game/help about following options:
 			'-y',
 			'-vf', 'vflip',
 			path.join(this.tempDir, 'video.mkv')
-		], {stdio: ['pipe', 'inherit', 'inherit']});
+		]), {stdio: ['pipe', 'inherit', 'inherit']});
 		this.videoPipe = this.videoGeneratingFfmpeg.stdin;
 		this.tempPixels = new Uint8Array(this.width * this.height * 4);
 	}
@@ -370,8 +386,7 @@ See https://sunniesnow.github.io/game/help about following options:
 	async runFfmpeg() {
 		this.println('Combining video and audio...');
 		fs.mkdirSync(path.dirname(this.output), {recursive: true});
-		this.ffmpeg = child_process.spawn(this.ffmpeg, [
-			this.ffmpegOptions,
+		this.ffmpegProcess = child_process.spawn(this.ffmpeg, this.makeFfmpegOptions([
 			'-i', path.join(this.tempDir, 'video.mkv'),
 			'-i', path.join(this.tempDir, 'audio.wav'),
 			'-y',
@@ -381,8 +396,8 @@ See https://sunniesnow.github.io/game/help about following options:
 			'-c:v', 'copy',
 			'-shortest',
 			this.output
-		], {stdio: 'inherit'});
-		await new Promise(resolve => this.ffmpeg.on('exit', resolve));
+		]), {stdio: 'inherit'});
+		await new Promise(resolve => this.ffmpegProcess.on('exit', resolve));
 	}
 
 	async end() {
