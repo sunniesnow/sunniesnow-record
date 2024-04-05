@@ -38,13 +38,7 @@ sunniesnow-record --level-file online --level-file-online sunniesnow-sample --ou
 ## Docker image
 
 You can also use the Docker image to run this tool.
-To do this, first pull the image for once:
-
-```shell
-docker pull ulysseszhan/sunniesnow-record
-```
-
-Then, run the following command:
+To do this, run the following command:
 
 ```shell
 docker run -v ./output:/data -i -t ulysseszhan/sunniesnow-record --level-file online --level-file-online sunniesnow-sample

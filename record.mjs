@@ -170,23 +170,26 @@ Sunniesnow.Record = class Record {
 		output: process.env.SUNNIESNOW_OUTPUT || 'output.mkv',
 		resultsDuration: 1,
 		waitForMusic: false,
-		clean: false
+		clean: false,
+		ffmpeg: 'ffmpeg',
+		ffmpegOptions: process.env.SUNNIESNOW_FFMPEG_OPTIONS || ''
 	}
 
 	static HELP_MESSAGE = `Usage: sunniesnow-record [options]
 
---help                print this message
---fps=60              frame rate of the output video
---quiet               do not print anything to stdout
---suppress-warnings   do not print warnings to stderr
---temp-dir=$TMPDIR    directory to store temporary files
-                      (default to %APPDATA_L)
---output=output.mkv   output file name
---results-duration=1  duration of the results screen in seconds
---wait-for-music      do not end the video until music finishes
---clean               do not use assets downloaded before
+--help=false            print this message
+--fps=60                frame rate of the output video
+--quiet=false           do not print anything to stdout
+--suppress-warnings     do not print warnings to stderr
+--temp-dir=$TMPDIR      directory to store temporary files
+--output=output.mkv     output file name
+--results-duration=1    duration of the results screen in seconds
+--wait-for-music=false  do not end the video until music finishes
+--clean=false           do not use assets downloaded before
+--ffmpeg=ffmpeg         path to ffmpeg executable
+--ffmpeg-options=       extra options to pass to ffmpeg
 
-See https://sunniesnow.github.io/game/help/ about following options:
+See https://sunniesnow.github.io/game/help about following options:
 --level-file
 --level-file-online
 --level-file-upload
@@ -293,7 +296,8 @@ See https://sunniesnow.github.io/game/help/ about following options:
 	}
 
 	async createVideoGeneratingFfmpeg() {
-		this.videoGeneratingFfmpeg = child_process.spawn('ffmpeg', [
+		this.videoGeneratingFfmpeg = child_process.spawn(this.ffmpeg, [
+			this.ffmpegOptions,
 			// video input
 			'-f', 'rawvideo',
 			'-pixel_format', 'rgba',
@@ -366,7 +370,8 @@ See https://sunniesnow.github.io/game/help/ about following options:
 	async runFfmpeg() {
 		this.println('Combining video and audio...');
 		fs.mkdirSync(path.dirname(this.output), {recursive: true});
-		this.ffmpeg = child_process.spawn('ffmpeg', [
+		this.ffmpeg = child_process.spawn(this.ffmpeg, [
+			this.ffmpegOptions,
 			'-i', path.join(this.tempDir, 'video.mkv'),
 			'-i', path.join(this.tempDir, 'audio.wav'),
 			'-y',
