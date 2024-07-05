@@ -27,14 +27,13 @@ Sunniesnow.Record = class Record {
 		offset: 0,
 		lyrica5: true,
 		noEarlyDrag: false,
-		directionInsensitiveFlick: false,
 		lockingHold: false,
+		minFlickDistance: 0.5,
+		maxFlickDistance: 3,
+		flickAngleRange: Math.PI / 4,
 
 		speed: 2,
 		noteSize: 1,
-		noEarlyDrag: false,
-		directionInsensitiveFlick: false,
-		lockingHold: false,
 		background: 'online',
 		backgroundOnline: 'default.svg',
 		backgroundFromLevel: '',
@@ -79,6 +78,9 @@ Sunniesnow.Record = class Record {
 		resumePreparationTime: 1,
 		beginningPreparationTime: 1,
 		notesPriorityOverPause: false,
+		pauseFullscreen: true,
+		pauseBlur: true,
+		secondPause: 'resume',
 
 		enableKeyboard: true,
 		keyboardWholeScreen: false,
@@ -106,6 +108,7 @@ Sunniesnow.Record = class Record {
 		antialias: true,
 		powerPreference: 'default',
 		debug: false,
+		hideDebugExceptPause: false,
 		suppressWarnings: false
 	}
 
