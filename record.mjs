@@ -375,7 +375,6 @@ See https://sunniesnow.github.io/game/help about following options:
 			return Sunniesnow.game.scene && !(Sunniesnow.game.scene instanceof Sunniesnow.SceneLoading);
 		});
 		this.createVideoGeneratingFfmpeg();
-		Sunniesnow.game.app.ticker.stop();
 	}
 
 	async screenshot() {
@@ -420,7 +419,7 @@ See https://sunniesnow.github.io/game/help about following options:
 
 	async run() {
 		await this.load();
-		Sunniesnow.game.app.ticker.start();
+		Sunniesnow.game.app.ticker.lastTime = -1;
 		let frameCount = 0;
 		let firstResultFrame;
 		while (true) {
