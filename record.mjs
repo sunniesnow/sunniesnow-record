@@ -56,6 +56,7 @@ Sunniesnow.Record = class Record {
 		hideFxInFront: false,
 		hideFxPerfect: false,
 		hideFxHoldStart: false,
+		alwaysUpdateFx: false,
 		touchEffects: false,
 		reverseNoteOrder: false,
 		hideTipPoints: false,
@@ -67,8 +68,11 @@ Sunniesnow.Record = class Record {
 		volumeMusic: 1,
 		seWithMusic: true,
 		delay: 0,
+		latencyHint: 'interactive',
+		latencyHintValue: 0.01,
 
 		autoplay: true,
+		progressAdjustable: false,
 		chartOffset: 0,
 		gameSpeed: 1,
 		horizontalFlip: false,
@@ -77,9 +81,12 @@ Sunniesnow.Record = class Record {
 		end: 1,
 		resumePreparationTime: 1,
 		beginningPreparationTime: 1,
+		pauseDoubleTime: 0,
 		notesPriorityOverPause: false,
 		pauseFullscreen: true,
 		pauseBlur: true,
+		hidePauseUi: false,
+		pauseFinish: false,
 		secondPause: 'resume',
 
 		enableKeyboard: true,
@@ -98,9 +105,13 @@ Sunniesnow.Record = class Record {
 
 		width: 1920,
 		height: 1080,
+		popup: false,
 		fullscreenOnStart: true,
 		floatAsFullscreen: false,
 		avoidDownloadingFonts: false,
+		contextMenuPlay: false,
+		contextMenuPause: true,
+		contextMenuNoModifier: true,
 		plugin: [],
 		pluginOnline: [],
 		pluginUpload: [],
@@ -357,17 +368,14 @@ See https://sunniesnow.github.io/game/help about following options:
 		fs.mkdirSync(this.tempDir, {recursive: true});
 		Sunniesnow.game = new Sunniesnow.Game();
 		Sunniesnow.game.settings = Object.assign({}, this.constructor.DEFAULT_GAME_SETTINGS, this.gameSettings);
-		Sunniesnow.game.start();
 		await Sunniesnow.Loader.loadChart();
 		Sunniesnow.Loader.load();
-		await Sunniesnow.Utils.until(() => {
-			Sunniesnow.Loader.updateLoading();
-			return Sunniesnow.Loader.loadingComplete;
+		await Sunniesnow.Utils.until(time => {
+			Sunniesnow.game.app?.ticker?.update(time);
+			return Sunniesnow.game.scene && !(Sunniesnow.game.scene instanceof Sunniesnow.SceneLoading);
 		});
-		Sunniesnow.game.initLevel();
-		Sunniesnow.game.initScene();
-		Sunniesnow.game.app.ticker.add(Sunniesnow.game.mainTicker.bind(Sunniesnow.game));
 		this.createVideoGeneratingFfmpeg();
+		Sunniesnow.game.app.ticker.stop();
 	}
 
 	async screenshot() {
@@ -412,6 +420,7 @@ See https://sunniesnow.github.io/game/help about following options:
 
 	async run() {
 		await this.load();
+		Sunniesnow.game.app.ticker.start();
 		let frameCount = 0;
 		let firstResultFrame;
 		while (true) {
