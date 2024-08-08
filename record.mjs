@@ -57,6 +57,8 @@ Sunniesnow.Record = class Record {
 		hideFxPerfect: false,
 		hideFxHoldStart: false,
 		alwaysUpdateFx: false,
+		scrollJudgementLine: 0.8,
+		scrollDistance: 1,
 		touchEffects: false,
 		reverseNoteOrder: false,
 		hideTipPoints: false,
@@ -71,6 +73,7 @@ Sunniesnow.Record = class Record {
 		latencyHint: 'interactive',
 		latencyHintValue: 0.01,
 
+		scroll: false,
 		autoplay: true,
 		progressAdjustable: false,
 		chartOffset: 0,
@@ -154,6 +157,8 @@ Sunniesnow.Record = class Record {
 		hideFxInFront: false,
 		hideFxPerfect: false,
 		hideFxHoldStart: false,
+		scrollJudgementLine: 0.8,
+		scrollDistance: 1,
 		reverseNoteOrder: false,
 		hideTipPoints: false,
 		se: 'default',
@@ -162,6 +167,7 @@ Sunniesnow.Record = class Record {
 		volumeSe: 1,
 		volumeMusic: 1,
 		delay: 0,
+		scroll: false,
 		chartOffset: 0,
 		gameSpeed: 1,
 		horizontalFlip: false,
@@ -234,6 +240,8 @@ See https://sunniesnow.github.io/game/help about following options:
 --hide-fx-in-front
 --hide-fx-perfect
 --hide-fx-hold-start
+--scroll-judgement-line
+--scroll-distance
 --reverse-note-order
 --hide-tip-points
 --se
@@ -242,6 +250,7 @@ See https://sunniesnow.github.io/game/help about following options:
 --volume-se
 --volume-music
 --delay
+--scroll
 --chart-offset
 --game-speed
 --horizontal-flip
