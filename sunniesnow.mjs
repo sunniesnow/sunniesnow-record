@@ -70,7 +70,7 @@ runScript('game/js/utils/Utils.js');
 runScript('game/js/ScriptsLoader.js');
 Sunniesnow.ScriptsLoader.setPolyfill(polyfill);
 await Sunniesnow.ScriptsLoader.runSiteScripts();
-Sunniesnow.PixiPatches.apply();
+Sunniesnow.Patches.apply();
 
 await PIXI.Assets.init({skipDetections: true}); // https://github.com/pixijs/node/issues/6
 
