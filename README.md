@@ -132,6 +132,14 @@ and use the local file system as the package source.
 
 Known bug in FFmpeg 6.0. Use FFmpeg 6.1 or later.
 
+### Stuck at loading background on Windows
+
+This may happen when the background is an SVG.
+This is a known issue caused by
+[a bug](https://github.com/Automattic/node-canvas/issues/1211)
+and [another bug](https://github.com/pixijs/node/issues/14).
+To work around this, use another background image format.
+
 ## License
 
 [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).

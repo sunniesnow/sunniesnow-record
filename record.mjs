@@ -40,12 +40,12 @@ Sunniesnow.Record = class Record {
 		backgroundUpload: null,
 		backgroundBlur: 100,
 		backgroundBrightness: 0.5,
-		fx: 'default',
-		fxOnline: '',
-		fxUpload: null,
 		skin: 'default',
 		skinOnline: '',
 		skinUpload: null,
+		fx: 'default',
+		fxOnline: '',
+		fxUpload: null,
 		hudTopCenter: 'combo',
 		hudTopLeft: 'title',
 		hudTopRight: 'score',
@@ -59,9 +59,17 @@ Sunniesnow.Record = class Record {
 		alwaysUpdateFx: false,
 		scrollJudgementLine: 0.8,
 		scrollDistance: 1,
+		hideTipPoints: false,
+		hideNotes: false,
+		hideCircles: false,
+		hideBgNotes: false,
+		hideFx: false,
+		hideBgPattern: false,
+		fadingStart: 1,
+		fadingDuration: 0.2,
 		touchEffects: false,
 		reverseNoteOrder: false,
-		hideTipPoints: false,
+		circleMovesWithNote: false,
 
 		se: 'default',
 		seOnline: '',
@@ -72,6 +80,15 @@ Sunniesnow.Record = class Record {
 		delay: 0,
 		latencyHint: 'interactive',
 		latencyHintValue: 0.01,
+
+		vibrationWithMusic: true,
+		vibrationDelay: 0,
+		tapVibrationTime: 0,
+		dragVibrationTime: 0,
+		flickVibrationTime: 0,
+		holdVibrationTime: 0,
+		holdVibrationPeriod: 300,
+		holdVibrationDutyCycle: 0,
 
 		scroll: false,
 		autoplay: true,
@@ -105,6 +122,15 @@ Sunniesnow.Record = class Record {
 		enableTouchscreen: true,
 		touchscreenWholeScreen: false,
 		touchPause: true,
+
+		nickname: 'New Poet',
+		avatar: 'online',
+		avatarOnline: 'default.svg',
+		avatarUpload: null,
+		avatarGravatar: '',
+
+		sscharter: false,
+		sscharterLiveRestart: false,
 
 		width: 1920,
 		height: 1080,
@@ -141,12 +167,12 @@ Sunniesnow.Record = class Record {
 		backgroundUpload: null,
 		backgroundBlur: 100,
 		backgroundBrightness: 0.5,
-		fx: 'default',
-		fxOnline: '',
-		fxUpload: null,
 		skin: 'default',
 		skinOnline: '',
 		skinUpload: null,
+		fx: 'default',
+		fxOnline: '',
+		fxUpload: null,
 		hudTopCenter: 'combo',
 		hudTopLeft: 'title',
 		hudTopRight: 'score',
@@ -159,8 +185,16 @@ Sunniesnow.Record = class Record {
 		hideFxHoldStart: false,
 		scrollJudgementLine: 0.8,
 		scrollDistance: 1,
-		reverseNoteOrder: false,
 		hideTipPoints: false,
+		hideNotes: false,
+		hideCircles: false,
+		hideBgNotes: false,
+		hideFx: false,
+		hideBgPattern: false,
+		fadingStart: 1,
+		fadingDuration: 0.2,
+		reverseNoteOrder: false,
+		circleMovesWithNote: false,
 		se: 'default',
 		seOnline: '',
 		seUpload: null,
@@ -175,6 +209,11 @@ Sunniesnow.Record = class Record {
 		start: 0,
 		end: 1,
 		beginningPreparationTime: 1,
+		nickname: 'New Poet',
+		avatar: 'online',
+		avatarOnline: 'default.svg',
+		avatarUpload: null,
+		avatarGravatar: '',
 		width: 1920,
 		height: 1080,
 		avoidDownloadingFonts: false,
@@ -224,12 +263,12 @@ See https://sunniesnow.github.io/game/help about following options:
 --background-upload
 --background-blur
 --background-brightness
---fx
---fx-online
---fx-upload
 --skin
 --skin-online
 --skin-upload
+--fx
+--fx-online
+--fx-upload
 --hud-top-center
 --hud-top-left
 --hud-top-right
@@ -242,8 +281,16 @@ See https://sunniesnow.github.io/game/help about following options:
 --hide-fx-hold-start
 --scroll-judgement-line
 --scroll-distance
---reverse-note-order
 --hide-tip-points
+--hide-notes
+--hide-circles
+--hide-bg-notes
+--hide-fx
+--hide-bg-pattern
+--fading-start
+--fading-duration
+--reverse-note-order
+--circle-moves-with-note
 --se
 --se-online
 --se-upload
@@ -258,6 +305,11 @@ See https://sunniesnow.github.io/game/help about following options:
 --start
 --end
 --beginning-preparation-time
+--nickname
+--avatar
+--avatar-online
+--avatar-upload
+--avatar-gravatar
 --width
 --height
 --avoid-downloading-fonts
