@@ -6,151 +6,13 @@ import child_process from 'child_process';
 import module from 'module';
 
 import Sunniesnow from './sunniesnow.mjs';
+import DEFAULT_GAME_SETTINGS from './default-settings.mjs'
 
 const require = module.createRequire(import.meta.url);
 
 const audioBufferToWav = require('audiobuffer-to-wav');
 
 Sunniesnow.Record = class Record {
-
-	static DEFAULT_GAME_SETTINGS = {
-		levelFile: 'upload',
-		levelFileOnline: '',
-		levelFileUpload: null,
-
-		musicSelect: '',
-		chartSelect: '',
-
-		judgementWindows: 'loose',
-		// judgementWindowsCustom...
-		noteHitSize: 3,
-		offset: 0,
-		lyrica5: true,
-		noEarlyDrag: false,
-		lockingHold: false,
-		minFlickDistance: 0.5,
-		maxFlickDistance: 3,
-		flickAngleRange: Math.PI / 4,
-
-		speed: 2,
-		noteSize: 1,
-		background: 'online',
-		backgroundOnline: 'default.svg',
-		backgroundFromLevel: '',
-		backgroundUpload: null,
-		backgroundBlur: 100,
-		backgroundBrightness: 0.5,
-		skin: 'default',
-		skinOnline: '',
-		skinUpload: null,
-		fx: 'default',
-		fxOnline: '',
-		fxUpload: null,
-		hudTopCenter: 'combo',
-		hudTopLeft: 'title',
-		hudTopRight: 'score',
-		doubleLineTap: true,
-		doubleLineHold: false,
-		doubleLineDrag: false,
-		doubleLineFlick: false,
-		hideFxInFront: false,
-		hideFxPerfect: false,
-		hideFxHoldStart: false,
-		alwaysUpdateFx: false,
-		scrollJudgementLine: 0.8,
-		scrollDistance: 1,
-		hideTipPoints: false,
-		hideNotes: false,
-		hideCircles: false,
-		hideBgNotes: false,
-		hideFx: false,
-		hideBgPattern: false,
-		fadingStart: 1,
-		fadingDuration: 0.2,
-		touchEffects: false,
-		reverseNoteOrder: false,
-		circleMovesWithNote: false,
-
-		se: 'default',
-		seOnline: '',
-		seUpload: null,
-		volumeSe: 1,
-		volumeMusic: 1,
-		seWithMusic: true,
-		delay: 0,
-		latencyHint: 'interactive',
-		latencyHintValue: 0.01,
-
-		vibrationWithMusic: true,
-		vibrationDelay: 0,
-		tapVibrationTime: 0,
-		dragVibrationTime: 0,
-		flickVibrationTime: 0,
-		holdVibrationTime: 0,
-		holdVibrationPeriod: 300,
-		holdVibrationDutyCycle: 0,
-
-		scroll: false,
-		autoplay: true,
-		progressAdjustable: false,
-		chartOffset: 0,
-		gameSpeed: 1,
-		horizontalFlip: false,
-		verticalFlip: false,
-		start: 0,
-		end: 1,
-		resumePreparationTime: 1,
-		beginningPreparationTime: 1,
-		pauseDoubleTime: 0,
-		notesPriorityOverPause: false,
-		pauseFullscreen: true,
-		pauseBlur: true,
-		hidePauseUi: false,
-		pauseFinish: false,
-		secondPause: 'resume',
-
-		enableKeyboard: true,
-		keyboardWholeScreen: false,
-		excludeKeys: [],
-		pauseKeys: [],
-		keyboardPause: false,
-		enableMouse: true,
-		mouseWholeScreen: false,
-		excludeButtons: [],
-		pauseButtons: [],
-		mousePause: true,
-		enableTouchscreen: true,
-		touchscreenWholeScreen: false,
-		touchPause: true,
-
-		nickname: 'New Poet',
-		avatar: 'online',
-		avatarOnline: 'default.svg',
-		avatarUpload: null,
-		avatarGravatar: '',
-
-		sscharter: false,
-		sscharterLiveRestart: false,
-
-		width: 1920,
-		height: 1080,
-		popup: false,
-		fullscreenOnStart: true,
-		floatAsFullscreen: false,
-		avoidDownloadingFonts: false,
-		contextMenuPlay: false,
-		contextMenuPause: true,
-		contextMenuNoModifier: true,
-		plugin: [],
-		pluginOnline: [],
-		pluginUpload: [],
-		renderer: 'webgl',
-		antialias: true,
-		powerPreference: 'default',
-		debug: false,
-		hideDebugExceptPause: false,
-		suppressWarnings: false
-	}
 
 	static DEFAULT_SETTINGS = {
 		levelFile: 'upload',
@@ -428,7 +290,7 @@ See https://sunniesnow.github.io/game/help about following options:
 		this.println('Loading...')
 		fs.mkdirSync(this.tempDir, {recursive: true});
 		Sunniesnow.game = new Sunniesnow.Game();
-		Sunniesnow.game.settings = Object.assign({}, this.constructor.DEFAULT_GAME_SETTINGS, this.gameSettings);
+		Sunniesnow.game.settings = Object.assign({}, DEFAULT_GAME_SETTINGS, this.gameSettings);
 		await Sunniesnow.Loader.loadChart();
 		Sunniesnow.Loader.load();
 		await Sunniesnow.Utils.until(time => {

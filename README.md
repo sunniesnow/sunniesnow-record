@@ -35,6 +35,12 @@ Here is a usage example:
 sunniesnow-record --level-file online --level-file-online sunniesnow-sample --output test.mkv
 ```
 
+There is also a command to generate a cover image:
+
+```shell
+sunniesnow-cover-gen --help
+```
+
 ## Docker image
 
 You can also use the Docker image to run this tool.

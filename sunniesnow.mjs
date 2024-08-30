@@ -1,4 +1,5 @@
 import * as PIXI from '@pixi/node';
+import '@pixi/graphics-extras';
 import JSZip from 'jszip';
 import { marked } from 'marked';
 import * as DOMPurify from 'dompurify';

@@ -21,7 +21,8 @@
 	},
 	"main": "./record.mjs",
 	"bin": {
-		"sunniesnow-record": "./cli.mjs"
+		"sunniesnow-record": "./cli.mjs",
+		"sonniesnow-cover-gen": "./cli-cover-gen.mjs"
 	},
 	"repository": {
 		"type": "git",
@@ -29,6 +30,7 @@
 	},
 	"dependencies": {
 		"@pixi/node": "7.3.0",
+		"@pixi/graphics-extras": "7.4.2",
 		"audio-decode": "^2.2.2",
 		"audiobuffer-to-wav": "^1.0.0",
 		"dompurify": "^3.0.5",
