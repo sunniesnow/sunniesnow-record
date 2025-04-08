@@ -148,4 +148,4 @@ To work around this, use another image format.
 
 ## License
 
-[GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
+[AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html).
