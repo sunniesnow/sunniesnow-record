@@ -73,6 +73,6 @@ Sunniesnow.ScriptsLoader.setPolyfill(polyfill);
 await Sunniesnow.ScriptsLoader.runSiteScripts();
 Sunniesnow.Patches.apply();
 
-await PIXI.Assets.init({skipDetections: true}); // https://github.com/pixijs/node/issues/6
+await PIXI.Assets.init({skipDetections: true}); // https://github.com/pixijs-userland/node/issues/6
 
 export default Sunniesnow;

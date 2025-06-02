@@ -16,8 +16,8 @@ jobs:
     name: Generate videos
     strategy:
       matrix:
-        node-version: [18, 20] # ['18', '20.6', '21']
-        os: [ubuntu-20.04, ubuntu-22.04, windows-latest]
+        node-version: [18, 20, 22]
+        os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -49,7 +49,7 @@ jobs:
           key: ${{ matrix.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('package-lock.json') }}
 
       - name: Install build dependencies (Ubuntu)
-        if: (matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04') && steps.cache-restore.outputs.cache-hit != 'true'
+        if: matrix.os == 'ubuntu-latest' && steps.cache-restore.outputs.cache-hit != 'true'
         # https://github.com/stackgl/headless-gl?tab=readme-ov-file#ubuntudebian
         # https://github.com/Automattic/node-canvas#compiling
         run: sudo apt-get install -y build-essential libxi-dev libglu1-mesa-dev libglew-dev pkg-config libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
@@ -76,13 +76,13 @@ jobs:
           key: ${{ matrix.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('package-lock.json') }}
 
       - name: Generate videos (Ubuntu)
-        # Why use xvfb: https://github.com/pixijs/node?tab=readme-ov-file#error-unable-to-auto-detect-a-suitable-renderer
+        # Why use xvfb: https://github.com/pixijs-userland/node?tab=readme-ov-file#error-unable-to-auto-detect-a-suitable-renderer
         # Why use --auto-servernum: https://stackoverflow.com/a/36002011/10245493
         run: |
           sudo apt-get install xvfb
           xvfb-run --auto-servernum node --inspect=0.0.0.0:9229 cli.mjs --level-file online --level-file-online sunniesnow-sample --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
           xvfb-run --auto-servernum node --inspect=0.0.0.0:9229 cli-cover-gen.mjs --level-file online --level-file-online sunniesnow-sample --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.png
-        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04'
+        if: matrix.os == 'ubuntu-latest'
 
       - name: Generate videos (Windows)
         # use `--background none` to avoid loading SVG: https://github.com/Automattic/node-canvas/issues/2333
@@ -109,7 +109,7 @@ jobs:
           path: output
           merge-multiple: true
       - name: Push generated videos
-        uses: crazy-max/ghaction-github-pages@v3
+        uses: crazy-max/ghaction-github-pages@v4
         with:
           target_branch: gh-action-output
           build_dir: output

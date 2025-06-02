@@ -1,6 +1,6 @@
 {
 	"name": "sunniesnow-record",
-	"version": "0.4.4",
+	"version": "0.5.0",
 	"description": "A CLI tool to render a Sunniesnow chart into a video.",
 	"homepage": "https://github.com/sunniesnow/sunniesnow-record",
 	"engines": {
@@ -13,7 +13,7 @@
 		"url": "https://github.com/sunniesnow/sunniesnow-record/issues",
 		"email": "ulysseszhan@gmail.com"
 	},
-	"license": "AGPL-3.0-only",
+	"license": "AGPL-3.0-or-later",
 	"author": {
 		"name": "Ulysses Zhan",
 		"email": "ulysseszhan@gmail.com",
@@ -30,7 +30,7 @@
 	},
 	"dependencies": {
 		"@pixi/node": "7.3.0",
-		"@pixi/graphics-extras": "7.4.2",
+		"@pixi/graphics-extras": "^7.3.0",
 		"audio-decode": "^2.2.2",
 		"audiobuffer-to-wav": "^1.0.0",
 		"dompurify": "^3.0.5",
@@ -46,7 +46,8 @@
 		}
 	},
 	"dependenciesComments": {
+		"@pixi/graphics-extras": "Its version must match exactly with package.json in @pixi/node because @pixi/node did not make @pixi/grphics a peer dependency",
 		"jszip": "The original package has this bug: https://github.com/Stuk/jszip/issues/899",
-		"gl": "https://github.com/pixijs/node/issues/18"
+		"gl": "https://github.com/pixijs-userland/node/issues/18"
 	}
 }

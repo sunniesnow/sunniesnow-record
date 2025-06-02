@@ -93,22 +93,24 @@ Sunniesnow.Record = class Record {
 		waitForMusic: false,
 		clean: false,
 		ffmpeg: 'ffmpeg',
-		ffmpegOptions: process.env.SUNNIESNOW_FFMPEG_OPTIONS || ''
+		ffmpegOptions: process.env.SUNNIESNOW_FFMPEG_OPTIONS || '',
+		ffmpegOutputOptions: process.env.SUNNIESNOW_FFMPEG_OUTPUT_OPTIONS || '',
 	}
 
 	static HELP_MESSAGE = `Usage: sunniesnow-record [options]
 
---help=false            print this message
---fps=60                frame rate of the output video
---quiet=false           do not print anything to stdout
---suppress-warnings     do not print warnings to stderr
---temp-dir=$TMPDIR      directory to store temporary files
---output=output.mkv     output file name
---results-duration=1    duration of the results screen in seconds
---wait-for-music=false  do not end the video until music finishes
---clean=false           do not use assets downloaded before
---ffmpeg=ffmpeg         path to ffmpeg executable
---ffmpeg-options=       extra options to pass to ffmpeg
+--help=false              print this message
+--fps=60                  frame rate of the output video
+--quiet=false             do not print anything to stdout
+--suppress-warnings       do not print warnings to stderr
+--temp-dir=$TMPDIR        directory to store temporary files
+--output=output.mkv       output file name
+--results-duration=1      duration of the results screen in seconds
+--wait-for-music=false    do not end the video until music finishes
+--clean=false             do not use assets downloaded before
+--ffmpeg=ffmpeg           path to ffmpeg executable
+--ffmpeg-options=         extra options to pass to ffmpeg
+--ffmpeg-output-options=  extra options to pass to ffmpeg after the -i options
 
 See https://sunniesnow.github.io/game/help about following options:
 --level-file
@@ -236,28 +238,31 @@ See https://sunniesnow.github.io/game/help about following options:
 		this.ffmpegOptions = options.ffmpegOptions;
 		delete options.ffmpegOptions;
 
+		this.ffmpegOutputOptions = options.ffmpegOutputOptions;
+		delete options.ffmpegOutputOptions;
+
 		this.constructor.replaceWithBlob(options);
 
 		this.gameSettings = options;
 	}
 
-	makeFfmpegOptions(options) {
-		if (this.ffmpegOptions) {
-			return [...this.ffmpegOptions.split(' '), ...options];
-		} else {
-			return options;
-		}
+	makeFfmpegOptions(inputOptions, outputOptions) {
+		return [
+			...this.ffmpegOptions?.split(' ') ?? [],
+			...inputOptions,
+			...this.ffmpegOutputOptions?.split(' ') ?? [],
+			...outputOptions,
+		].filter(Boolean);
 	}
 
 	async createVideoGeneratingFfmpeg() {
 		this.videoGeneratingFfmpeg = child_process.spawn(this.ffmpeg, this.makeFfmpegOptions([
-			// video input
 			'-f', 'rawvideo',
 			'-pixel_format', 'rgba',
 			'-framerate', this.fps.toString(),
 			'-video_size', `${this.width}x${this.height}`,
 			'-i', 'pipe:0',
-			// output
+		], [
 			'-y',
 			'-vf', 'vflip',
 			path.join(this.tempDir, 'video.mkv')
@@ -322,6 +327,7 @@ See https://sunniesnow.github.io/game/help about following options:
 		this.ffmpegProcess = child_process.spawn(this.ffmpeg, this.makeFfmpegOptions([
 			'-i', path.join(this.tempDir, 'video.mkv'),
 			'-i', path.join(this.tempDir, 'audio.wav'),
+		], [
 			'-y',
 			'-nostdin',
 			'-map', '0:v',

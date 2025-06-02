@@ -16,6 +16,7 @@ const DEFAULT_GAME_SETTINGS = {
 	minFlickDistance: 0.5,
 	maxFlickDistance: 3,
 	flickAngleRange: Math.PI / 4,
+	overlappingFlickFix: false,
 
 	speed: 2,
 	noteSize: 1,

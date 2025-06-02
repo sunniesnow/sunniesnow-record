@@ -35,6 +35,9 @@ Here is a usage example:
 sunniesnow-record --level-file online --level-file-online sunniesnow-sample --output test.mkv
 ```
 
+Use the options `--ffmpeg-output-options="-c:v hevc_nvenc"`
+to enable NVIDIA GPU acceleration (significant performance boost).
+
 There is also a command to generate a cover image:
 
 ```shell
@@ -51,6 +54,8 @@ docker run -v ./output:/data -i -t ulysseszhan/sunniesnow-record --level-file on
 ```
 
 This command will generate a video at `output/output.mkv`.
+
+NVIDIA GPU acceleration is not supported in the Docker image.
 
 ## Troubleshoot
 
@@ -132,7 +137,7 @@ and use the local file system as the package source.
 
 ### `‘uintptr_t’ does not name a type`
 
-[Known bug](https://github.com/pixijs/node/issues/18).
+[Known bug](https://github.com/pixijs-userland/node/issues/18).
 
 ### The video only shows a static image, but audio is fine
 
@@ -143,9 +148,18 @@ Known bug in FFmpeg 6.0. Use FFmpeg 6.1 or later.
 This may happen when the background or avatar is an SVG.
 This is a known issue caused by
 [a bug](https://github.com/Automattic/node-canvas/issues/1211)
-and [another bug](https://github.com/pixijs/node/issues/14).
+and [another bug](https://github.com/pixijs-userland/node/issues/14).
 To work around this, use another image format.
+
+### Build failure with Node 24: `‘const class v8::FunctionCallbackInfo<v8::Value>’ has no member named ‘Holder’`
+
+[Known bug](https://github.com/nodejs/nan/issues/996).
+Use Node 22 instead.
+
+### Failed to create GL context on NixOS
+
+See [this issue](https://github.com/stackgl/headless-gl/issues/283#issuecomment-2927896516).
 
 ## License
 
-[AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html).
+[AGPL-3.0-or-later](https://www.gnu.org/licenses/agpl-3.0.html).
