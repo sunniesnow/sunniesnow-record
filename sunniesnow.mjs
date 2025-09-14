@@ -1,11 +1,11 @@
 import * as PIXI from '@pixi/node';
-import '@pixi/graphics-extras';
 import JSZip from 'jszip';
 import { marked } from 'marked';
 import * as DOMPurify from 'dompurify';
 import mime from 'mime';
 import { AudioContext, OfflineAudioContext } from 'node-web-audio-api';
 import audioDecode from 'audio-decode';
+import * as liquidjs from 'liquidjs';
 
 import path from 'path';
 import fs from 'fs';
@@ -44,7 +44,6 @@ function patchedFetch(fetchUrl, options) {
 		return fetch(fetchUrl, options);
 	}
 }
-PIXI.settings.ADAPTER.fetch = patchedFetch;
 PIXI.NodeAdapter.fetch = patchedFetch;
 const Sunniesnow = {};
 
@@ -55,6 +54,7 @@ const polyfill = {
 	marked,
 	DOMPurify,
 	mime,
+	liquidjs,
 	AudioContext,
 	OfflineAudioContext,
 	audioDecode,

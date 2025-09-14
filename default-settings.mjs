@@ -39,6 +39,7 @@ const DEFAULT_GAME_SETTINGS = {
 	doubleLineHold: false,
 	doubleLineDrag: false,
 	doubleLineFlick: false,
+	doubleLineDragFlick: false,
 	hideFxInFront: false,
 	hideFxPerfect: false,
 	hideFxHoldStart: false,
@@ -56,6 +57,7 @@ const DEFAULT_GAME_SETTINGS = {
 	touchEffects: false,
 	reverseNoteOrder: false,
 	circleMovesWithNote: false,
+	disableOrnament: false,
 
 	se: 'default',
 	seOnline: '',
@@ -75,6 +77,7 @@ const DEFAULT_GAME_SETTINGS = {
 	holdVibrationTime: 0,
 	holdVibrationPeriod: 300,
 	holdVibrationDutyCycle: 0,
+	dragFlickVibrationTime: 0,
 
 	scroll: false,
 	autoplay: true,
@@ -117,6 +120,10 @@ const DEFAULT_GAME_SETTINGS = {
 
 	sscharter: false,
 	sscharterLiveRestart: false,
+	discordPresence: false,
+	discordToken: '',
+	watchingInsteadOfPlaying: true,
+	imgurClientId: '28c34d2d6d4ec58',
 
 	width: 1920,
 	height: 1080,
@@ -131,8 +138,11 @@ const DEFAULT_GAME_SETTINGS = {
 	pluginOnline: [],
 	pluginUpload: [],
 	renderer: 'webgl',
-	antialias: true,
-	powerPreference: 'default',
+	glVersion: 2,
+	glAntialias: true,
+	glPowerPreference: 'default',
+	gpuAntialias: true,
+	gpuPowerPreference: 'high-performance',
 	debug: false,
 	hideDebugExceptPause: false,
 	suppressWarnings: false

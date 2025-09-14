@@ -29,16 +29,16 @@
 		"url": "https://github.com/sunniesnow/sunniesnow-record.git"
 	},
 	"dependencies": {
-		"@pixi/node": "7.3.0",
-		"@pixi/graphics-extras": "^7.3.0",
-		"audio-decode": "^2.2.2",
+		"@pixi/node": "github:UlyssesZh/pixijs-node#v8",
+		"audio-decode": "^2.2.3",
 		"audiobuffer-to-wav": "^1.0.0",
-		"dompurify": "^3.0.5",
+		"dompurify": "^3.2.6",
 		"jszip": "github:UlyssesZh/jszip#fix-node-blob",
-		"marked": "^5.1.1",
-		"mime": "^3.0.0",
+		"liquidjs": "^10.21.1",
+		"marked": "^16.2.1",
+		"mime": "^4.1.0",
 		"minimist": "^1.2.8",
-		"node-web-audio-api": "^0.11.0"
+		"node-web-audio-api": "^1.0.4"
 	},
 	"overrides": {
 		"@pixi/node": {
@@ -46,7 +46,6 @@
 		}
 	},
 	"dependenciesComments": {
-		"@pixi/graphics-extras": "Its version must match exactly with package.json in @pixi/node because @pixi/node did not make @pixi/grphics a peer dependency",
 		"jszip": "The original package has this bug: https://github.com/Stuk/jszip/issues/899",
 		"gl": "https://github.com/pixijs-userland/node/issues/18"
 	}

@@ -42,6 +42,7 @@ Sunniesnow.Record = class Record {
 		doubleLineHold: false,
 		doubleLineDrag: false,
 		doubleLineFlick: false,
+		doubleLineDragFlick: false,
 		hideFxInFront: false,
 		hideFxPerfect: false,
 		hideFxHoldStart: false,
@@ -57,6 +58,7 @@ Sunniesnow.Record = class Record {
 		fadingDuration: 0.2,
 		reverseNoteOrder: false,
 		circleMovesWithNote: false,
+		disableOrnament: false,
 		se: 'default',
 		seOnline: '',
 		seUpload: null,
@@ -140,6 +142,7 @@ See https://sunniesnow.github.io/game/help about following options:
 --double-line-hold
 --double-line-drag
 --double-line-flick
+--double-line-drag-flick
 --hide-fx-in-front
 --hide-fx-perfect
 --hide-fx-hold-start
@@ -155,6 +158,7 @@ See https://sunniesnow.github.io/game/help about following options:
 --fading-duration
 --reverse-note-order
 --circle-moves-with-note
+--disable-ornament
 --se
 --se-online
 --se-upload
