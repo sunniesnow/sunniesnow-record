@@ -26,7 +26,7 @@ jobs:
           submodules: recursive
 
       - name: Set up FFmpeg
-        uses: FedericoCarboni/setup-ffmpeg@v2
+        uses: FedericoCarboni/setup-ffmpeg@v3
         id: setup-ffmpeg
 
       - name: Set up Node.js
