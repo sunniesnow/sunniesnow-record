@@ -43,7 +43,7 @@ jobs:
 
       - name: Restore cache
         id: cache-restore
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v5
         with:
           path: ${{ github.workspace }}/node_modules
           key: ${{ matrix.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('package-lock.json') }}
@@ -76,7 +76,7 @@ jobs:
         if: steps.cache-restore.outputs.cache-hit != 'true'
 
       - name: Cache save
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v5
         if: steps.cache-restore.outputs.cache-hit != 'true'
         with:
           path: ${{ github.workspace }}/node_modules
