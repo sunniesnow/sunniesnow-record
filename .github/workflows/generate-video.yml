@@ -16,7 +16,7 @@ jobs:
     name: Generate videos
     strategy:
       matrix:
-        node-version: [18, 20, 22]
+        node-version: [22, 24]
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -66,6 +66,11 @@ jobs:
           Invoke-WebRequest https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/2.1.5.1/libjpeg-turbo-2.1.5.1-vc64.exe -OutFile .\temp\libjpeg-turbo.exe
           .\temp\libjpeg-turbo.exe /S
 
+      - name: Install runtime dependencies (Ubuntu)
+        # if cache not hit, these dependencies will be installed as dependencies of the build dependencies
+        if: matrix.os == 'ubuntu-latest' && steps.cache-restore.outputs.cache-hit == 'true'
+        run: sudo apt-get install -y libgif7 librsvg2-common
+
       - name: Run npm ci
         run: npm ci --build-from-source
         if: steps.cache-restore.outputs.cache-hit != 'true'
@@ -81,7 +86,6 @@ jobs:
         # Why use xvfb: https://github.com/pixijs-userland/node?tab=readme-ov-file#error-unable-to-auto-detect-a-suitable-renderer
         # Why use --auto-servernum: https://stackoverflow.com/a/36002011/10245493
         run: |
-          sudo apt-get install xvfb
           xvfb-run --auto-servernum node --inspect=0.0.0.0:9229 cli.mjs --level-file online --level-file-online sunniesnow-sample --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
           xvfb-run --auto-servernum node --inspect=0.0.0.0:9229 cli-cover-gen.mjs --level-file online --level-file-online sunniesnow-sample --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.png
         if: matrix.os == 'ubuntu-latest'
