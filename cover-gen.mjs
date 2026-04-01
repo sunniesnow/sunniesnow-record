@@ -14,7 +14,7 @@ Sunniesnow.CoverGen = class CoverGen {
 		backgroundOnline: 'default.svg',
 		backgroundFromLevel: '',
 		backgroundUpload: null,
-		backgroundBlur: 100,
+		backgroundBlur: 20,
 		backgroundBrightness: 0.5,
 		skin: 'default',
 		skinOnline: '',
