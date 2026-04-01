@@ -6,14 +6,11 @@ A CLI tool to generate a video for a
 ## Installation
 
 First, install [FFmpeg](https://ffmpeg.org/) (6.1 or later)
-and [Node.js](https://nodejs.org/) (20.6 or later).
+and [Node.js](https://nodejs.org/) (22.0 or later).
 
 > [!NOTE]
 > The version of FFmpeg must not be 6.0
 > because of a known bug in that version.
->
-> The version of Node.js most not be between 20.0 and 20.5 (inclusive)
-> because of a known bug in those versions.
 
 Then, run the following command:
 
