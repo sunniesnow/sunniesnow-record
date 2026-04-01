@@ -6,7 +6,6 @@ import child_process from 'child_process';
 import module from 'module';
 
 import Sunniesnow from './sunniesnow.mjs';
-import DEFAULT_GAME_SETTINGS from './default-settings.mjs'
 
 const require = module.createRequire(import.meta.url);
 
@@ -14,20 +13,25 @@ const audioBufferToWav = require('audiobuffer-to-wav');
 
 Sunniesnow.Record = class Record {
 
+	static UNCHANGEABLE_OVERRIDDEN_SETTINGS = {
+		seWithMusic: true,
+		autoplay: true,
+	};
+
 	static DEFAULT_SETTINGS = {
 		levelFile: 'upload',
 		levelFileOnline: '',
 		levelFileUpload: null,
-		musicSelect: '',
-		chartSelect: '',
+		musicSelect: null,
+		chartSelect: null,
 		lyrica5: true,
 		speed: 2,
 		noteSize: 1,
 		background: 'online',
 		backgroundOnline: 'default.svg',
-		backgroundFromLevel: '',
+		backgroundFromLevel: null,
 		backgroundUpload: null,
-		backgroundBlur: 100,
+		backgroundBlur: 20,
 		backgroundBrightness: 0.5,
 		skin: 'default',
 		skinOnline: '',
@@ -207,7 +211,7 @@ See https://sunniesnow.github.io/game/help about following options:
 	}
 
 	constructor(options) {
-		options = Object.assign({}, this.constructor.DEFAULT_SETTINGS, options);
+		options = Object.assign({}, this.constructor.UNCHANGEABLE_OVERRIDDEN_SETTINGS, this.constructor.DEFAULT_SETTINGS, options);
 
 		this.quiet = options.quiet;
 		delete options.quiet;
@@ -296,12 +300,9 @@ See https://sunniesnow.github.io/game/help about following options:
 	}
 
 	async load() {
-		this.println('Loading...')
+		this.println('Loading...');
 		fs.mkdirSync(this.tempDir, {recursive: true});
-		Sunniesnow.game = new Sunniesnow.Game();
-		Sunniesnow.game.settings = Object.assign({}, DEFAULT_GAME_SETTINGS, this.gameSettings);
-		await Sunniesnow.Loader.loadChart();
-		Sunniesnow.Loader.load();
+		await Sunniesnow.Game.run(Object.assign({}, this.gameSettings));
 		await Sunniesnow.Utils.until(time => {
 			Sunniesnow.game.app?.ticker?.update(time);
 			return Sunniesnow.game.scene && !(Sunniesnow.game.scene instanceof Sunniesnow.SceneLoading);

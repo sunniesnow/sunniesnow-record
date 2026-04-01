@@ -1,7 +1,6 @@
 import fs from 'fs';
 
 import Sunniesnow from './sunniesnow.mjs';
-import DEFAULT_GAME_SETTINGS from './default-settings.mjs'
 
 Sunniesnow.CoverGen = class CoverGen {
 
@@ -9,12 +8,12 @@ Sunniesnow.CoverGen = class CoverGen {
 		levelFile: 'upload',
 		levelFileOnline: '',
 		levelFileUpload: null,
-		chartSelect: '',
+		chartSelect: null,
 		background: 'from-level',
 		backgroundOnline: 'default.svg',
-		backgroundFromLevel: '',
+		backgroundFromLevel: null,
 		backgroundUpload: null,
-		backgroundBlur: 100,
+		backgroundBlur: 20,
 		backgroundBrightness: 0.5,
 		skin: 'default',
 		skinOnline: '',
@@ -156,10 +155,7 @@ See https://sunniesnow.github.io/game/help about following options:
 	async load() {
 		this.println('Loading...')
 		fs.mkdirSync(this.tempDir, {recursive: true});
-		Sunniesnow.game = new Sunniesnow.Game();
-		Sunniesnow.game.settings = Object.assign({}, DEFAULT_GAME_SETTINGS, this.gameSettings);
-		await Sunniesnow.Loader.loadChart();
-		Sunniesnow.Loader.load();
+		await Sunniesnow.Game.run(Object.assign({}, this.gameSettings));
 		await Sunniesnow.Utils.until(time => {
 			Sunniesnow.game.app?.ticker?.update(time);
 			return Sunniesnow.game.scene && !(Sunniesnow.game.scene instanceof Sunniesnow.SceneLoading);

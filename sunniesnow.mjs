@@ -6,6 +6,7 @@ import mime from 'mime';
 import { AudioContext, OfflineAudioContext } from 'node-web-audio-api';
 import audioDecode from 'audio-decode';
 import * as liquidjs from 'liquidjs';
+import { JSDOM } from 'jsdom';
 
 import path from 'path';
 import fs from 'fs';
@@ -58,6 +59,7 @@ const polyfill = {
 	AudioContext,
 	OfflineAudioContext,
 	audioDecode,
+	JSDOM,
 	fetch: patchedFetch,
 	require: module.createRequire(import.meta.url)
 };
@@ -70,8 +72,9 @@ function runScript(filename) {
 runScript('game/js/utils/Utils.js');
 runScript('game/js/ScriptsLoader.js');
 Sunniesnow.ScriptsLoader.setPolyfill(polyfill);
-await Sunniesnow.ScriptsLoader.runSiteScripts();
+await Sunniesnow.ScriptsLoader.initAndRunSiteScripts();
 Sunniesnow.Patches.apply();
+await Sunniesnow.Settings.initWithJsdom();
 
 await PIXI.Assets.init({skipDetections: true}); // https://github.com/pixijs-userland/node/issues/6
 
