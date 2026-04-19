@@ -1,14 +1,8 @@
 {
 	"name": "sunniesnow-record",
-	"version": "0.5.0",
-	"description": "A CLI tool to render a Sunniesnow chart into a video.",
+	"version": "0.5.1",
+	"description": "CLI tool to render a Sunniesnow chart into a video.",
 	"homepage": "https://github.com/sunniesnow/sunniesnow-record",
-	"engines": {
-		"node": ">=20.6.0 || ^18"
-	},
-	"enginesComments": {
-		"node": "20.5.0 has this bug: https://github.com/nodejs/node/issues/49062"
-	},
 	"bugs": {
 		"url": "https://github.com/sunniesnow/sunniesnow-record/issues",
 		"email": "ulysseszhan@gmail.com"
@@ -19,35 +13,35 @@
 		"email": "ulysseszhan@gmail.com",
 		"url": "https://ulysseszh.github.io"
 	},
+	"devEngines": {
+		"packageManager": {
+			"name": "npm"
+		}
+	},
 	"main": "./record.mjs",
 	"bin": {
-		"sunniesnow-record": "./cli.mjs",
-		"sonniesnow-cover-gen": "./cli-cover-gen.mjs"
+		"sunniesnow-record": "cli.mjs",
+		"sonniesnow-cover-gen": "cli-cover-gen.mjs"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/sunniesnow/sunniesnow-record.git"
+		"url": "git+https://github.com/sunniesnow/sunniesnow-record.git"
 	},
+	"files": ["**/*.js", "**/*.mjs", "**/*.json"],
 	"dependencies": {
 		"@pixi/node": "^8.0.0",
-		"audio-decode": "^2.2.3",
+		"audio-decode": "^3.9.3",
 		"audiobuffer-to-wav": "^1.0.0",
-		"dompurify": "^3.2.6",
+		"dompurify": "^3.4.0",
 		"jszip": "github:UlyssesZh/jszip#fix-node-blob",
-		"liquidjs": "^10.21.1",
-		"marked": "^16.2.1",
+		"liquidjs": "^10.25.5",
+		"marked": "^18.0.2",
 		"mime": "^4.1.0",
 		"minimist": "^1.2.8",
-		"node-web-audio-api": "^1.0.4",
-		"jsdom": "^28.1.0"
-	},
-	"overrides": {
-		"@pixi/node": {
-			"gl": "^8.0.2"
-		}
+		"node-web-audio-api": "^1.0.9",
+		"jsdom": "^29.0.2"
 	},
 	"dependenciesComments": {
-		"jszip": "The original package has this bug: https://github.com/Stuk/jszip/issues/899",
-		"gl": "https://github.com/pixijs-userland/node/issues/18"
+		"jszip": "The original package has this bug: https://github.com/Stuk/jszip/issues/899"
 	}
 }

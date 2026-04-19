@@ -1,6 +1,6 @@
 # sunniesnow-record
 
-A CLI tool to generate a video for a
+CLI tool to generate a video for a
 [Sunniesnow](https://github.com/sunniesnow/sunniesnow) chart.
 
 ## Installation

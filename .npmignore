@@ -1,8 +1,0 @@
-.git
-.gitmodules
-.github
-shell.nix
-output
-.dockerignore
-Dockerfile
-entrypoint.sh
