@@ -19,6 +19,7 @@ jobs:
       matrix:
         node-version: [22, 24]
         os: [ubuntu-latest, windows-latest]
+      fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -34,6 +35,7 @@ jobs:
         id: setup-node
         uses: actions/setup-node@v6
         with:
+          package-manager-cache: false
           node-version: ${{ matrix.node-version }}
 
       - name: Start tmate
@@ -73,7 +75,11 @@ jobs:
         run: sudo apt-get install -y libgif7 librsvg2-common
 
       - name: Run npm ci
-        run: npm ci --build-from-source
+        # previously npm ci --build-from-source works, but now we have to run rebuild for each of them separately
+        run: |
+          npm ci
+          npm rebuild gl --build-from-source
+          npm rebuild canvas --build-from-source
         if: steps.cache-restore.outputs.cache-hit != 'true'
 
       - name: Cache save
@@ -92,10 +98,15 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
 
       - name: Generate videos (Windows)
+        shell: C:\msys64\usr\bin\bash.exe -l '{0}'
         # use `--background none` to avoid loading SVG: https://github.com/Automattic/node-canvas/issues/2333
         run: |
           node --inspect=0.0.0.0:9229 cli.mjs --level-file online --level-file-online sunniesnow-sample --background none --avatar none --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
           node --inspect=0.0.0.0:9229 cli-cover-gen.mjs --level-file online --level-file-online sunniesnow-sample --background none --avatar none --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.png
+        env:
+          MSYS2_PATH_TYPE: inherit
+          CHERE_INVOKING: '1'
+          MSYSTEM: MINGW64
         if: matrix.os == 'windows-latest'
 
       - name: Upload generated videos

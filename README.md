@@ -69,8 +69,8 @@ ssh-keygen
 
 ### Font rendering issues
 
-If only English characters are rendered incorrectly,
-this is due to a [bug in node-canvas](https://github.com/Automattic/node-canvas/issues/2332).
+On Windows, you may see that only English characters are rendered incorrectly.
+This is due to a [bug in node-canvas](https://github.com/Automattic/node-canvas/issues/2332).
 To work around this, rebuild node-canvas from source:
 
 ```shell
@@ -81,6 +81,26 @@ For other font rendering issues, you can also try rebuilding node-canvas from so
 However, sometimes the issues are hard to fix.
 It is known that the font rendering behaviors are different
 for different versions of pangocairo and other dependencies.
+
+### Assertion `font_map != NULL` failed on Windows
+
+You may see this error on Windows:
+
+```plain
+(node.exe:9820): Pango-CRITICAL **: pango_win32_font_map_get_font_cache: assertion `font_map != NULL' failed
+**
+Pango:ERROR:pangowin32.c:831:pango_win32_font_finalize: assertion failed: (win32font->fontmap != NULL)
+```
+
+This is a [known issue](https://github.com/Automattic/node-canvas/issues/1118),
+but there is not a reliable way to fix it.
+Some things you may try:
+
+- Rebuild node-canvas from source (see [font rendering issues](#font-rendering-issues)).
+- Try again (yes, this error may happen randomly).
+- The font may be problematic. As the recorder will look for fonts in the temp dir, you may replace them.
+- If acceptable, use `--avoid-downloading-fonts true`. This will use fallback fonts from your OS instead.
+- Use Docker instead as a last resort.
 
 ### `No module named 'distutils'` with Python 3.12 or later
 
@@ -107,7 +127,8 @@ apt install build-essential pkg-config libcairo2-dev libpango1.0-dev libjpeg-dev
 and then run the following command (it may take several minutes):
 
 ```shell
-env --chdir=$(npm root -g)/sunniesnow-record npm rebuild canvas gl --build-from-source
+env --chdir=$(npm root -g)/sunniesnow-record npm rebuild canvas --build-from-source
+env --chdir=$(npm root -g)/sunniesnow-record npm rebuild gl --build-from-source
 ```
 
 If you have troubles building them, see
@@ -126,15 +147,11 @@ Error: ENOENT: no such file or directory, open '.../node_modules/sunniesnow-reco
 
 This is due to an [npm bug](https://github.com/npm/cli/issues/2774).
 To work around this, clone this repo recursively,
-and use the local file system as the package source.
+and use the local file system as the package source (e.g. by running `npm link`).
 
 ### Antialias does not work
 
 [Known bug](https://github.com/stackgl/headless-gl/issues/282).
-
-### `‘uintptr_t’ does not name a type`
-
-[Known bug](https://github.com/pixijs-userland/node/issues/18).
 
 ### The video only shows a static image, but audio is fine
 
@@ -147,11 +164,6 @@ This is a known issue caused by
 [a bug](https://github.com/Automattic/node-canvas/issues/1211)
 and [another bug](https://github.com/pixijs-userland/node/issues/14).
 To work around this, use another image format.
-
-### Build failure with Node 24: `‘const class v8::FunctionCallbackInfo<v8::Value>’ has no member named ‘Holder’`
-
-[Known bug](https://github.com/nodejs/nan/issues/996).
-Use Node 22 instead.
 
 ### Failed to create GL context on NixOS
 

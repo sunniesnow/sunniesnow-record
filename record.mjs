@@ -1,5 +1,6 @@
 import mime from 'mime';
 
+import os from 'os';
 import fs from 'fs';
 import path from 'path';
 import child_process from 'child_process';
@@ -97,7 +98,7 @@ Sunniesnow.Record = class Record {
 		fps: 60,
 		quiet: false,
 		suppressWarnings: false,
-		tempDir: process.env.TMPDIR || process.env.TEMP || '/tmp',
+		tempDir: os.tmpdir(),
 		output: process.env.SUNNIESNOW_OUTPUT || 'output.mkv',
 		resultsDuration: 1,
 		waitForMusic: false,

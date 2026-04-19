@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:22-bookworm
+FROM node:24-bookworm
 
 RUN apt-get -y update && apt-get -y upgrade
 RUN apt-get install -y libasound2-dev ffmpeg
@@ -10,7 +10,9 @@ RUN apt-get install -y libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev libr
 
 WORKDIR /app
 COPY . .
-RUN npm ci --build-from-source
+RUN npm ci
+RUN npm rebuild canvas --build-from-source
+RUN npm rebuild gl --build-from-source
 RUN npm link
 
 VOLUME [ "/data" ]

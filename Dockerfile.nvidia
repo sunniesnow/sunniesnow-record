@@ -4,7 +4,7 @@ FROM nvidia/cuda:12.8.1-base-ubuntu24.04
 
 RUN apt-get -y update && apt-get -y upgrade
 RUN apt-get install -y curl
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
 RUN apt-get install -y nodejs
 RUN apt-get install -y libasound2-dev ffmpeg
 RUN apt-get install -y python-is-python3
@@ -14,7 +14,9 @@ RUN apt-get install -y libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev libr
 
 WORKDIR /app
 COPY . .
-RUN npm ci --build-from-source
+RUN npm ci
+RUN npm rebuild canvas --build-from-source
+RUN npm rebuild gl --build-from-source
 RUN npm link
 
 VOLUME [ "/data" ]
