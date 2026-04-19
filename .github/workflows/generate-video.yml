@@ -77,9 +77,9 @@ jobs:
       - name: Run npm ci
         # previously npm ci --build-from-source works, but now we have to run rebuild for each of them separately
         run: |
-          npm ci
-          npm rebuild gl --build-from-source
-          npm rebuild canvas --build-from-source
+          npm ci --verbose
+          npm rebuild gl --build-from-source --verbose
+          npm rebuild canvas --build-from-source --verbose
         if: steps.cache-restore.outputs.cache-hit != 'true'
 
       - name: Cache save
@@ -98,15 +98,12 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
 
       - name: Generate videos (Windows)
-        shell: C:\msys64\usr\bin\bash.exe -l '{0}'
-        # use `--background none` to avoid loading SVG: https://github.com/Automattic/node-canvas/issues/2333
+        # use `--background-online test/pexels-pixabay-220072.jpg` to avoid loading SVG: https://github.com/Automattic/node-canvas/issues/2333
+        # run twice because the first time will always trigger this bug for unknown reason: https://github.com/Automattic/node-canvas/issues/1118
         run: |
-          node --inspect=0.0.0.0:9229 cli.mjs --level-file online --level-file-online sunniesnow-sample --background none --avatar none --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
-          node --inspect=0.0.0.0:9229 cli-cover-gen.mjs --level-file online --level-file-online sunniesnow-sample --background none --avatar none --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.png
-        env:
-          MSYS2_PATH_TYPE: inherit
-          CHERE_INVOKING: '1'
-          MSYSTEM: MINGW64
+          node --inspect=0.0.0.0:9229 cli.mjs --level-file online --level-file-online sunniesnow-sample --background online --background-online --background-online test/pexels-pixabay-220072.jpg --avatar gravatar --avatar-gravatar ulysseszhan@pm.me --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
+          node --inspect=0.0.0.0:9229 cli.mjs --level-file online --level-file-online sunniesnow-sample --background online --background-online --background-online test/pexels-pixabay-220072.jpg --avatar gravatar --avatar-gravatar ulysseszhan@pm.me --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
+          node --inspect=0.0.0.0:9229 cli-cover-gen.mjs --level-file online --level-file-online sunniesnow-sample  --background online --background-online --background-online test/pexels-pixabay-220072.jpg --avatar gravatar --avatar-gravatar ulysseszhan@pm.me --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.png
         if: matrix.os == 'windows-latest'
 
       - name: Upload generated videos
@@ -116,7 +113,8 @@ jobs:
           path: output
 
   push:
-    permissions: write-all
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     name: Push generated videos
     needs: generate

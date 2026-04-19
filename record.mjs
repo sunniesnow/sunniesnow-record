@@ -30,7 +30,7 @@ Sunniesnow.Record = class Record {
 		tipPointSpeed: 1,
 		tipPointDistance: 1,
 		noteSize: 1,
-		background: 'online',
+		background: 'from-level',
 		backgroundOnline: 'default.svg',
 		backgroundFromLevel: null,
 		backgroundUpload: null,
