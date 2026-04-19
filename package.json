@@ -35,7 +35,7 @@
 		"dompurify": "^3.2.6",
 		"jszip": "github:UlyssesZh/jszip#fix-node-blob",
 		"liquidjs": "^10.21.1",
-		"marked": "^16.2.1",
+		"marked": "^18.0.2",
 		"mime": "^4.1.0",
 		"minimist": "^1.2.8",
 		"node-web-audio-api": "^1.0.4",
