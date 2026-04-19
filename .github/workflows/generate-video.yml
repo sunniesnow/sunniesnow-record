@@ -98,16 +98,12 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
 
       - name: Generate videos (Windows)
-        shell: C:\msys64\usr\bin\bash.exe -l '{0}'
-        # use `--background none` to avoid loading SVG: https://github.com/Automattic/node-canvas/issues/2333
+        # use `--background-online test/pexels-pixabay-220072.jpg` to avoid loading SVG: https://github.com/Automattic/node-canvas/issues/2333
         run: |
-          node --inspect=0.0.0.0:9229 cli.mjs --level-file online --level-file-online sunniesnow-sample --background none --avatar none --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
-          node --inspect=0.0.0.0:9229 cli-cover-gen.mjs --level-file online --level-file-online sunniesnow-sample --background none --avatar none --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.png
-        env:
-          MSYS2_PATH_TYPE: inherit
-          CHERE_INVOKING: '1'
-          MSYSTEM: MINGW64
-        if: 0 == 1
+          node --inspect=0.0.0.0:9229 cli.mjs --level-file online --level-file-online sunniesnow-sample --background-online test/pexels-pixabay-220072.jpg --avatar gravatar --avatar-gravatar ulysseszhan@pm.me --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
+          node --inspect=0.0.0.0:9229 cli.mjs --level-file online --level-file-online sunniesnow-sample --background-online test/pexels-pixabay-220072.jpg --avatar gravatar --avatar-gravatar ulysseszhan@pm.me --fps 15 --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.mkv
+          node --inspect=0.0.0.0:9229 cli-cover-gen.mjs --level-file online --level-file-online sunniesnow-sample --background-online test/pexels-pixabay-220072.jpg --avatar gravatar --avatar-gravatar ulysseszhan@pm.me --output output/output-${{ matrix.node-version }}-${{ matrix.os }}.png
+        if: matrix.os == 'windows-latest'
 
       - name: Upload generated videos
         uses: actions/upload-artifact@v7
