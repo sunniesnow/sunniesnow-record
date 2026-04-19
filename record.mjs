@@ -26,6 +26,8 @@ Sunniesnow.Record = class Record {
 		chartSelect: null,
 		lyrica5: true,
 		speed: 2,
+		tipPointSpeed: 1,
+		tipPointDistance: 1,
 		noteSize: 1,
 		background: 'online',
 		backgroundOnline: 'default.svg',
@@ -47,6 +49,8 @@ Sunniesnow.Record = class Record {
 		doubleLineDrag: false,
 		doubleLineFlick: false,
 		doubleLineDragFlick: false,
+		forceDoubleLine: false,
+		opacityFake: 1,
 		hideFxInFront: false,
 		hideFxPerfect: false,
 		hideFxHoldStart: false,
@@ -126,6 +130,8 @@ See https://sunniesnow.github.io/game/help about following options:
 --chart-select
 --lyrica-5
 --speed
+--tip-point-speed
+--tip-point-distance
 --note-size
 --background
 --background-online
@@ -147,6 +153,8 @@ See https://sunniesnow.github.io/game/help about following options:
 --double-line-drag
 --double-line-flick
 --double-line-drag-flick
+--force-double-line
+--opacity-fake
 --hide-fx-in-front
 --hide-fx-perfect
 --hide-fx-hold-start
