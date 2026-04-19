@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         node-version: [22, 24]
-        os: [ubuntu-latest, windows-latest]
+        os: [windows-latest]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -42,7 +42,7 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           detached: true
-        if: github.event_name == 'workflow_dispatch' && inputs.tmate
+        if: 0 == 0
 
       - name: Restore cache
         id: cache-restore
@@ -107,7 +107,7 @@ jobs:
           MSYS2_PATH_TYPE: inherit
           CHERE_INVOKING: '1'
           MSYSTEM: MINGW64
-        if: matrix.os == 'windows-latest'
+        if: 0 == 1
 
       - name: Upload generated videos
         uses: actions/upload-artifact@v7
