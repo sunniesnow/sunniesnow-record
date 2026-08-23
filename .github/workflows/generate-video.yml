@@ -69,6 +69,11 @@ jobs:
           Invoke-WebRequest https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/2.1.5.1/libjpeg-turbo-2.1.5.1-vc64.exe -OutFile .\temp\libjpeg-turbo.exe
           .\temp\libjpeg-turbo.exe /S
 
+      - name: Set up MSVC
+        # somehow node-gyp cannot find VS on gh-hosted runners now?
+        if: matrix.os == 'windows-latest' && steps.cache-restore.outputs.cache-hit != 'true'
+        run: choco install visualstudio2022-workload-vctools -y
+
       - name: Install runtime dependencies (Ubuntu)
         # if cache not hit, these dependencies will be installed as dependencies of the build dependencies
         if: matrix.os == 'ubuntu-latest' && steps.cache-restore.outputs.cache-hit == 'true'
@@ -77,7 +82,7 @@ jobs:
       - name: Run npm ci
         # previously npm ci --build-from-source works, but now we have to run rebuild for each of them separately
         run: |
-          npm ci --verbose
+          npm ci --verbose --force
           npm rebuild gl --build-from-source --verbose
           npm rebuild canvas --build-from-source --verbose
         if: steps.cache-restore.outputs.cache-hit != 'true'
