@@ -2,7 +2,7 @@
 	packages = [
 		cairo gcc pango pkg-config libjpeg librsvg
 		libxi libGLU glew giflib alsa-lib xvfb-run ffmpeg
-		nodejs_24 python3
+		nodejs_26 python3
 	];
 	shellHook = ''
 		export LD_LIBRARY_PATH=${lib.makeLibraryPath [

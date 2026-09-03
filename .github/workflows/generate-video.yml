@@ -17,7 +17,7 @@ jobs:
     name: Generate videos
     strategy:
       matrix:
-        node-version: [22, 24]
+        node-version: [22, 24, 26]
         os: [ubuntu-latest, windows-latest]
       fail-fast: false
     runs-on: ${{ matrix.os }}
@@ -80,11 +80,32 @@ jobs:
         run: sudo apt-get install -y libgif7 librsvg2-common
 
       - name: Run npm ci
-        # previously npm ci --build-from-source works, but now we have to run rebuild for each of them separately
-        run: |
-          npm ci --verbose --force
-          npm rebuild gl --build-from-source --verbose
-          npm rebuild canvas --build-from-source --verbose
+        # previously npm ci --build-from-source works, but now we have to run rebuild for gl and canvas separately
+        run: npm ci --verbose --force --ignore-scripts
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+
+      - name: Build gl (Node < 26)
+        run: npm rebuild gl --build-from-source --verbose
+        if: steps.cache-restore.outputs.cache-hit != 'true' && matrix.node-version != 26
+
+      - name: Build gl (Ubuntu, Node 26)
+        run: npm rebuild gl --build-from-source --verbose
+        env:
+          GYP_DEFINES: enable_lto=0 enable_thin_lto=0
+          npm_config_cc: clang
+          npm_config_cxx: clang++
+          CC: clang
+          CXX: clang++
+        if: steps.cache-restore.outputs.cache-hit != 'true' && matrix.node-version == 26 && matrix.os == 'ubuntu-latest'
+
+      - name: Build gl (Windows, Node 26)
+        run: npm rebuild gl --build-from-source --verbose
+        env:
+          GYP_DEFINES: enable_lto=0 enable_thin_lto=0
+        if: steps.cache-restore.outputs.cache-hit != 'true' && matrix.node-version == 26 && matrix.os == 'windows-latest'
+
+      - name: Build canvas
+        run: npm rebuild canvas --build-from-source --verbose
         if: steps.cache-restore.outputs.cache-hit != 'true'
 
       - name: Cache save
