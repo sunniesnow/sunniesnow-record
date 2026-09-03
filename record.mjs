@@ -71,6 +71,7 @@ Sunniesnow.Record = class Record {
 		hideBgPattern: false,
 		fadingStart: 1,
 		fadingDuration: 0.2,
+		qualityBigText: 1,
 		reverseNoteOrder: false,
 		circleMovesWithNote: false,
 		disableOrnament: false,
@@ -139,7 +140,13 @@ See https://sunniesnow.github.io/game/help about following options:
 --speed
 --tip-point-speed
 --tip-point-distance
---note-size
+--note-size-tap
+--note-size-drag
+--note-size-flick
+--note-size-hold
+--note-size-drag-flick
+--note-size-head-only-hold
+--note-size-bg-note
 --background
 --background-online
 --background-from-level
@@ -175,6 +182,7 @@ See https://sunniesnow.github.io/game/help about following options:
 --hide-bg-pattern
 --fading-start
 --fading-duration
+--quality-big-text
 --reverse-note-order
 --circle-moves-with-note
 --disable-ornament
