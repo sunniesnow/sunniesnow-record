@@ -19,7 +19,9 @@ jobs:
           node-version: 24
 
       - name: Install build dependencies
-        run: sudo apt-get install -y build-essential libxi-dev libglu1-mesa-dev libglew-dev pkg-config libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libxi-dev libglu1-mesa-dev libglew-dev pkg-config libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 
       - name: CI and publish
         run: npm ci && npm publish
