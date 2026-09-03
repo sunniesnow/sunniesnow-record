@@ -1,6 +1,6 @@
 {
 	"name": "sunniesnow-record",
-	"version": "0.5.2",
+	"version": "0.5.4",
 	"description": "CLI tool to render a Sunniesnow chart into a video.",
 	"homepage": "https://github.com/sunniesnow/sunniesnow-record",
 	"bugs": {
