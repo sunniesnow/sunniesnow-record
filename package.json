@@ -1,6 +1,6 @@
 {
 	"name": "sunniesnow-record",
-	"version": "0.5.4",
+	"version": "0.5.5",
 	"description": "CLI tool to render a Sunniesnow chart into a video.",
 	"homepage": "https://github.com/sunniesnow/sunniesnow-record",
 	"bugs": {
@@ -18,7 +18,7 @@
 			"name": "npm"
 		}
 	},
-	"main": "./record.mjs",
+	"main": "./main.mjs",
 	"bin": {
 		"sunniesnow-record": "cli.mjs",
 		"sonniesnow-cover-gen": "cli-cover-gen.mjs"

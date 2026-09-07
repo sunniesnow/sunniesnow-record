@@ -20,6 +20,8 @@ npm install -g sunniesnow-record
 
 ## Usage
 
+### CLI
+
 Run the following command to get help:
 
 ```shell
@@ -40,6 +42,49 @@ There is also a command to generate a cover image:
 ```shell
 sunniesnow-cover-gen --help
 ```
+
+### API
+
+```js
+const Sunniesnow = import 'sunniesnow-record';
+
+// generate video
+await Sunniesnow.Record.run({
+	levelFile: 'online',
+	levelFileOnline: 'sunniesnow-sample',
+	output: 'output/output.mkv',
+}, progress => console.log(progress));
+
+// generate cover image
+await Sunniesnow.CoverGen.run({
+	levelFile: 'online',
+	levelFileOnline: 'sunniesnow-sample',
+	output: 'output/output.png',
+});
+```
+
+The options are the same as CLI (but with camel cases and JS data types).
+Recording video has a progress callback, but generating the cover does not.
+The argument given to the callback function for every call goes as follows
+(as an example):
+
+```js
+{ status: 'loading' }
+{ status: 'renderingGame', frameCount: 0, currentTime: 0, endTime: 5.75 }
+{ status: 'renderingGame', frameCount: 1, currentTime: 0.016666666666666666, endTime: 5.75 }
+// ...
+{ status: 'renderingGame', frameCount: 285, currentTime: 4.75, endTime: 5.75 }
+{ status: 'renderingResult', frameCount: 286, currentTime: 4.766666666666667, endTime: 5.75 }
+// ...
+{ status: 'renderingResult', frameCount: 345, currentTime: 5.75, endTime: 5.75 }
+{ status: 'finishingUpVideo' }
+{ status: 'exportingAudio' }
+{ status: 'merging' }
+{ status: 'done' }
+```
+
+Options like `levelFileUpload` accpet either a path from local filesystem or a `Blob`.
+However, output must be a path in local filesystem.
 
 ## Docker image
 

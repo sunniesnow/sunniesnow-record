@@ -41,3 +41,4 @@ if (Object.keys(parsedOptions).length > 0) {
 	process.exit(1);
 }
 await Record.run(options);
+process.exit();

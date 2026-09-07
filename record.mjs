@@ -106,6 +106,7 @@ Sunniesnow.Record = class Record {
 		quiet: false,
 		suppressWarnings: false,
 		tempDir: os.tmpdir(),
+		assetsDir: os.tmpdir(),
 		output: process.env.SUNNIESNOW_OUTPUT || 'output.mkv',
 		resultsDuration: 1,
 		waitForMusic: false,
@@ -122,6 +123,7 @@ Sunniesnow.Record = class Record {
 --quiet=false             do not print anything to stdout
 --suppress-warnings       do not print warnings to stderr
 --temp-dir=$TMPDIR        directory to store temporary files
+--assets-dir=$TMPDIR       directory to place downloaded assets
 --output=output.mkv       output file name
 --results-duration=1      duration of the results screen in seconds
 --wait-for-music=false    do not end the video until music finishes
@@ -254,6 +256,9 @@ See https://sunniesnow.github.io/game/help about following options:
 		this.tempDir = options.tempDir;
 		delete options.tempDir;
 
+		this.assetsDir = options.assetsDir;
+		delete options.assetsDir;
+
 		this.output = options.output;
 		delete options.output;
 
@@ -325,6 +330,7 @@ See https://sunniesnow.github.io/game/help about following options:
 	async load() {
 		this.println('Loading...');
 		fs.mkdirSync(this.tempDir, {recursive: true});
+		fs.mkdirSync(this.assetsDir, {recursive: true});
 		await Sunniesnow.Game.run(Object.assign({}, this.gameSettings));
 		await Sunniesnow.Utils.until(time => {
 			Sunniesnow.game.app?.ticker?.update(time);
@@ -374,11 +380,14 @@ See https://sunniesnow.github.io/game/help about following options:
 		await new Promise(resolve => this.videoGeneratingFfmpeg.on('exit', resolve));
 	}
 
-	async run() {
+	async run(progressCallback) {
+		progressCallback ??= () => {};
+		progressCallback({status: 'loading'});
 		await this.load();
 		Sunniesnow.game.app.ticker.lastTime = -1;
 		let frameCount = 0;
 		let firstResultFrame;
+		let endTime;
 		while (true) {
 			let breakCondition = !!firstResultFrame;
 			breakCondition &&= (frameCount - firstResultFrame) / this.fps > this.resultsDuration
@@ -390,26 +399,36 @@ See https://sunniesnow.github.io/game/help about following options:
 			//this.reprint(`Rendering ${currentTime.toFixed(2)}s...`)
 			Sunniesnow.Audio.currentTime = currentTime;
 			Sunniesnow.game.app.ticker.update(currentTime * 1000);
+			if (frameCount === 0) { // endTime does not change, but we cannot get it before the first frame
+				endTime = Sunniesnow.game.level.unhitNotes.reduce((max, note) => Math.max(max, note.endTime), -Infinity) - Sunniesnow.Music.start + this.resultsDuration;
+				if (this.waitForMusic) {
+					endTime = Math.max(endTime, Sunniesnow.Music.duration - Sunniesnow.Music.start);
+				}
+			}
+			progressCallback({status: firstResultFrame ? 'renderingResult' : 'renderingGame', frameCount, currentTime, endTime});
 			await this.screenshot();
 			if (Sunniesnow.game.level.finished && !firstResultFrame) {
 				firstResultFrame = frameCount;
 			}
 			frameCount++;
 		}
+		progressCallback({status: 'finishingUpVideo'});
 		await this.end();
+		progressCallback({status: 'exportingAudio'});
 		await this.exportAudio();
+		progressCallback({status: 'merging'});
 		await this.runFfmpeg();
+		progressCallback({status: 'done'});
 		this.println('Done!');
 	}
 
-	static async run(options) {
+	static async run(options, progressCallback) {
 		if (options.help) {
 			console.log(this.HELP_MESSAGE);
-			process.exit();
+			return;
 		}
 		Sunniesnow.record = new this(options);
-		await Sunniesnow.record.run();
-		process.exit();
+		await Sunniesnow.record.run(progressCallback);
 	}
 };
 export default Sunniesnow.Record;

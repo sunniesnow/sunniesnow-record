@@ -1,4 +1,7 @@
+import mime from 'mime';
+
 import fs from 'fs';
+import os from 'os';
 
 import Sunniesnow from './sunniesnow.mjs';
 
@@ -33,7 +36,8 @@ Sunniesnow.CoverGen = class CoverGen {
 		help: false,
 		quiet: false,
 		suppressWarnings: false,
-		tempDir: process.env.TMPDIR || process.env.TEMP || '/tmp',
+		tempDir: os.tmpdir(),
+		assetsDir: os.tmpdir(),
 		coverThemeImageX: null,
 		coverThemeImageY: null,
 		coverThemeImageWidth: null,
@@ -47,6 +51,7 @@ Sunniesnow.CoverGen = class CoverGen {
 --quiet=false             do not print anything to stdout
 --suppress-warnings       do not print warnings to stderr
 --temp-dir=$TMPDIR        directory to store temporary files
+--assets-dir=$TMPDIR      directory to place downloaded assets
 --cover-theme-image-x     x coordinate of the center of the cropped theme image
 --cover-theme-image-y     y coordinate of the center of the cropped theme image
 --cover-theme-image-width width of the cropped theme image
@@ -112,6 +117,9 @@ See https://sunniesnow.github.io/game/help about following options:
 		this.tempDir = options.tempDir;
 		delete options.tempDir;
 
+		this.assetsDir = options.assetsDir;
+		delete options.assetsDir;
+
 		this.coverThemeImageX = options.coverThemeImageX;
 		delete options.coverThemeImageX;
 
@@ -155,6 +163,7 @@ See https://sunniesnow.github.io/game/help about following options:
 	async load() {
 		this.println('Loading...')
 		fs.mkdirSync(this.tempDir, {recursive: true});
+		fs.mkdirSync(this.assetsDir, {recursive: true});
 		await Sunniesnow.Game.run(Object.assign({}, this.gameSettings));
 		await Sunniesnow.Utils.until(time => {
 			Sunniesnow.game.app?.ticker?.update(time);
@@ -173,11 +182,9 @@ See https://sunniesnow.github.io/game/help about following options:
 	static async run(options) {
 		if (options.help) {
 			console.log(this.HELP_MESSAGE);
-			process.exit();
 		}
 		Sunniesnow.record = new this(options);
 		await Sunniesnow.record.run();
-		process.exit();
 	}
 };
 export default Sunniesnow.CoverGen;
