@@ -327,11 +327,11 @@ See https://sunniesnow.github.io/game/help about following options:
 		}
 	}
 
-	async load() {
+	async load(progressCallback) {
 		this.println('Loading...');
 		fs.mkdirSync(this.tempDir, {recursive: true});
 		fs.mkdirSync(this.assetsDir, {recursive: true});
-		await Sunniesnow.Game.run(Object.assign({}, this.gameSettings));
+		await Sunniesnow.Game.run(Object.assign({}, this.gameSettings), progressCallback);
 		await Sunniesnow.Utils.until(time => {
 			Sunniesnow.game.app?.ticker?.update(time);
 			return Sunniesnow.game.scene && !(Sunniesnow.game.scene instanceof Sunniesnow.SceneLoading);
@@ -382,35 +382,42 @@ See https://sunniesnow.github.io/game/help about following options:
 
 	async run(progressCallback) {
 		progressCallback ??= () => {};
-		progressCallback({status: 'loading'});
-		await this.load();
+		await this.load(() => {
+			this.println(Sunniesnow.Loader.loadingText);
+			progressCallback({
+				status: 'loading',
+				modulesCount: Sunniesnow.Loader.loadingModulesProgress,
+				totalModules: Sunniesnow.Loader.targetLoadingModulesProgress,
+				currentModule: Sunniesnow.Loader.currentlyLoadingModule,
+			});
+		});
 		Sunniesnow.game.app.ticker.lastTime = -1;
-		let frameCount = 0;
+		let framesCount = 0;
 		let firstResultFrame;
 		let endTime;
 		while (true) {
 			let breakCondition = !!firstResultFrame;
-			breakCondition &&= (frameCount - firstResultFrame) / this.fps > this.resultsDuration
+			breakCondition &&= (framesCount - firstResultFrame) / this.fps > this.resultsDuration
 			breakCondition &&= !this.waitForMusic || Sunniesnow.Music.finished
 			if (breakCondition) {
 				break;
 			}
-			const currentTime = frameCount / this.fps;
+			const currentTime = framesCount / this.fps;
 			//this.reprint(`Rendering ${currentTime.toFixed(2)}s...`)
 			Sunniesnow.Audio.currentTime = currentTime;
 			Sunniesnow.game.app.ticker.update(currentTime * 1000);
-			if (frameCount === 0) { // endTime does not change, but we cannot get it before the first frame
+			if (framesCount === 0) { // endTime does not change, but we cannot get it before the first frame
 				endTime = Sunniesnow.game.level.unhitNotes.reduce((max, note) => Math.max(max, note.endTime), -Infinity) - Sunniesnow.Music.start + this.resultsDuration;
 				if (this.waitForMusic) {
 					endTime = Math.max(endTime, Sunniesnow.Music.duration - Sunniesnow.Music.start);
 				}
 			}
-			progressCallback({status: firstResultFrame ? 'renderingResult' : 'renderingGame', frameCount, currentTime, endTime});
+			progressCallback({status: firstResultFrame ? 'renderingResult' : 'renderingGame', framesCount, currentTime, endTime});
 			await this.screenshot();
 			if (Sunniesnow.game.level.finished && !firstResultFrame) {
-				firstResultFrame = frameCount;
+				firstResultFrame = framesCount;
 			}
-			frameCount++;
+			framesCount++;
 		}
 		progressCallback({status: 'finishingUpVideo'});
 		await this.end();

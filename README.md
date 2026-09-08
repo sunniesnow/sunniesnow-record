@@ -69,20 +69,24 @@ The argument given to the callback function for every call goes as follows
 (as an example):
 
 ```js
-{ status: 'loading' }
-{ status: 'renderingGame', frameCount: 0, currentTime: 0, endTime: 5.75 }
-{ status: 'renderingGame', frameCount: 1, currentTime: 0.016666666666666666, endTime: 5.75 }
+{ status: 'loading', modulesCount: 0, totalModules: 67, currentModule: 'Config' }
 // ...
-{ status: 'renderingGame', frameCount: 285, currentTime: 4.75, endTime: 5.75 }
-{ status: 'renderingResult', frameCount: 286, currentTime: 4.766666666666667, endTime: 5.75 }
+{ status: 'loading', modulesCount: 66, totalModules: 67, currentModule: 'DiscordRichPresence' }
+{ status: 'loading', modulesCount: 67, totalModules: 67, currentModule: null }
+{ status: 'renderingGame', framesCount: 0, currentTime: 0, endTime: 5.75 }
+{ status: 'renderingGame', framesCount: 1, currentTime: 0.016666666666666666, endTime: 5.75 }
 // ...
-{ status: 'renderingResult', frameCount: 345, currentTime: 5.75, endTime: 5.75 }
+{ status: 'renderingGame', framesCount: 285, currentTime: 4.75, endTime: 5.75 }
+{ status: 'renderingResult', framesCount: 286, currentTime: 4.766666666666667, endTime: 5.75 }
+// ...
+{ status: 'renderingResult', framesCount: 345, currentTime: 5.75, endTime: 5.75 }
 { status: 'finishingUpVideo' }
 { status: 'exportingAudio' }
 { status: 'merging' }
 { status: 'done' }
 ```
 
+The last rendering progress does not guarantee that `currentTime` equals `endTime`.
 Options like `levelFileUpload` accpet either a path from local filesystem or a `Blob`.
 However, output must be a path in local filesystem.
 
