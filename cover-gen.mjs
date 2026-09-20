@@ -160,11 +160,11 @@ See https://sunniesnow.github.io/game/help about following options:
 		}
 	}
 
-	async load() {
+	async load(progressCallback) {
 		this.println('Loading...')
 		fs.mkdirSync(this.tempDir, {recursive: true});
 		fs.mkdirSync(this.assetsDir, {recursive: true});
-		await Sunniesnow.Game.run(Object.assign({}, this.gameSettings));
+		await Sunniesnow.Game.run(Object.assign({}, this.gameSettings), progressCallback);
 		await Sunniesnow.Utils.until(time => {
 			Sunniesnow.game.app?.ticker?.update(time);
 			return Sunniesnow.game.scene && !(Sunniesnow.game.scene instanceof Sunniesnow.SceneLoading);
@@ -172,7 +172,7 @@ See https://sunniesnow.github.io/game/help about following options:
 	}
 
 	async run() {
-		await this.load();
+		await this.load(() => this.println(Sunniesnow.Loader.loadingText));
 		const dataUrl = await Sunniesnow.CoverGenerator.generate();
 		const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '');
 		fs.writeFileSync(this.output, base64Data, 'base64');
