@@ -34,6 +34,9 @@ Here is a usage example:
 sunniesnow-record --level-file online --level-file-online sunniesnow-sample --output test.mkv
 ```
 
+Use `--no-audio` to export video only, or `--no-video` to export audio only
+(for example, with `--output music.wav`). These options cannot be used together.
+
 Use the options `--ffmpeg-output-options="-c:v hevc_nvenc"`
 to enable NVIDIA GPU acceleration (significant performance boost).
 
