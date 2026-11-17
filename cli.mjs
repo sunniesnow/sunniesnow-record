@@ -24,9 +24,9 @@ for (const key of keys) {
 				process.exit(1);
 			}
 		} else if (typeof Record.DEFAULT_SETTINGS[key] === 'boolean') {
-			if (options[key] === 'true') {
+			if (options[key] === 'true' || options[key] === true) {
 				options[key] = true;
-			} else if (options[key] === 'false') {
+			} else if (options[key] === 'false' || options[key] === false) {
 				options[key] = false;
 			} else {
 				process.stderr.write(`Invalid boolean for ${slugKey}\n`);

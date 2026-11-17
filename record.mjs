@@ -102,6 +102,8 @@ Sunniesnow.Record = class Record {
 		pluginUpload: [],
 
 		help: false,
+		noAudio: true,
+		noVideo: true,
 		fps: 60,
 		quiet: false,
 		suppressWarnings: false,
@@ -119,6 +121,8 @@ Sunniesnow.Record = class Record {
 	static HELP_MESSAGE = `Usage: sunniesnow-record [options]
 
 --help=false              print this message
+--no-audio                do not export audio
+--no-video                do not export video
 --fps=60                  frame rate of the output video
 --quiet=false             do not print anything to stdout
 --suppress-warnings       do not print warnings to stderr
@@ -238,6 +242,14 @@ See https://sunniesnow.github.io/game/help about following options:
 	constructor(options) {
 		options = Object.assign({}, this.constructor.UNCHANGEABLE_OVERRIDDEN_SETTINGS, this.constructor.DEFAULT_SETTINGS, options);
 
+		this.noAudio = options.noAudio;
+		delete options.noAudio;
+		this.noVideo = options.noVideo;
+		delete options.noVideo;
+		if (this.noAudio && this.noVideo) {
+			throw new Error('Audio and video cannot both be disabled');
+		}
+
 		this.quiet = options.quiet;
 		delete options.quiet;
 
@@ -336,7 +348,9 @@ See https://sunniesnow.github.io/game/help about following options:
 			Sunniesnow.game.app?.ticker?.update(time);
 			return Sunniesnow.game.scene && !(Sunniesnow.game.scene instanceof Sunniesnow.SceneLoading);
 		});
-		this.createVideoGeneratingFfmpeg();
+		if (!this.noVideo) {
+			await this.createVideoGeneratingFfmpeg();
+		}
 	}
 
 	async screenshot() {
@@ -356,18 +370,17 @@ See https://sunniesnow.github.io/game/help about following options:
 	}
 
 	async runFfmpeg() {
-		this.println('Combining video and audio...');
+		this.println('Writing output...');
 		fs.mkdirSync(path.dirname(this.output), {recursive: true});
 		this.ffmpegProcess = child_process.spawn(this.ffmpeg, this.makeFfmpegOptions([
-			'-i', path.join(this.tempDir, 'video.mkv'),
-			'-i', path.join(this.tempDir, 'audio.wav'),
+			...this.noVideo ? [] : ['-i', path.join(this.tempDir, 'video.mkv')],
+			...this.noAudio ? [] : ['-i', path.join(this.tempDir, 'audio.wav')],
 		], [
 			'-y',
 			'-nostdin',
-			'-map', '0:v',
-			'-map', '1:a',
-			'-c:v', 'copy',
-			'-shortest',
+			...this.noVideo ? [] : ['-map', '0:v', '-c:v', 'copy'],
+			...this.noAudio ? [] : ['-map', this.noVideo ? '0:a' : '1:a'],
+			...!this.noVideo && !this.noAudio ? ['-shortest'] : [],
 			this.output
 		]), {stdio: 'inherit'});
 		await new Promise(resolve => this.ffmpegProcess.on('exit', resolve));
@@ -413,16 +426,22 @@ See https://sunniesnow.github.io/game/help about following options:
 				}
 			}
 			progressCallback({status: firstResultFrame ? 'renderingResult' : 'renderingGame', framesCount, currentTime, endTime});
-			await this.screenshot();
+			if (!this.noVideo) {
+				await this.screenshot();
+			}
 			if (Sunniesnow.game.level.finished && !firstResultFrame) {
 				firstResultFrame = framesCount;
 			}
 			framesCount++;
 		}
-		progressCallback({status: 'finishingUpVideo'});
-		await this.end();
-		progressCallback({status: 'exportingAudio'});
-		await this.exportAudio();
+		if (!this.noVideo) {
+			progressCallback({status: 'finishingUpVideo'});
+			await this.end();
+		}
+		if (!this.noAudio) {
+			progressCallback({status: 'exportingAudio'});
+			await this.exportAudio();
+		}
 		progressCallback({status: 'merging'});
 		await this.runFfmpeg();
 		progressCallback({status: 'done'});
