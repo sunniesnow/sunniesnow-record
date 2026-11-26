@@ -104,7 +104,20 @@ docker run -v ./output:/data -i -t ulysseszhan/sunniesnow-record --level-file on
 
 This command will generate a video at `output/output.mkv`.
 
-NVIDIA GPU acceleration is not supported in the Docker image.
+For NVIDIA GPU encoding, build the image using `Dockerfile.nvidia` and run it
+with GPU access:
+
+```shell
+docker build -f Dockerfile.nvidia -t sunniesnow-record:nvidia .
+docker run --rm --gpus all -v ./output:/data sunniesnow-record:nvidia --level-file online --level-file-online sunniesnow-sample
+```
+
+The host needs an NVIDIA GPU with HEVC NVENC support, a driver compatible with
+the image's CUDA version, and the
+[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
+This image selects the `hevc_nvenc` encoder by default.
+Check NVIDIA's [codec support matrix](https://developer.nvidia.com/video-encode-decode-support-matrix)
+for GPU compatibility.
 
 ## Troubleshoot
 
