@@ -104,12 +104,11 @@ docker run -v ./output:/data -i -t ulysseszhan/sunniesnow-record --level-file on
 
 This command will generate a video at `output/output.mkv`.
 
-For NVIDIA GPU encoding, build the image using `Dockerfile.nvidia` and run it
-with GPU access:
+For NVIDIA GPU encoding, pull the NVIDIA image and run it with GPU access:
 
 ```shell
-docker build -f Dockerfile.nvidia -t sunniesnow-record:nvidia .
-docker run --rm --gpus all -v ./output:/data sunniesnow-record:nvidia --level-file online --level-file-online sunniesnow-sample
+docker pull ulysseszhan/sunniesnow-record:latest-nvidia
+docker run --rm --gpus all -v ./output:/data ulysseszhan/sunniesnow-record:latest-nvidia --level-file online --level-file-online sunniesnow-sample
 ```
 
 The host needs an NVIDIA GPU with HEVC NVENC support, a driver compatible with

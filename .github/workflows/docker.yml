@@ -8,8 +8,16 @@ on:
 
 jobs:
   build-push:
-    name: Build and push Docker image
+    name: Build and push Docker image (${{ matrix.dockerfile }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: Dockerfile
+            suffix: ''
+          - dockerfile: Dockerfile.nvidia
+            suffix: -nvidia
     steps:
       - name: Check out
         uses: actions/checkout@v6
@@ -27,18 +35,21 @@ jobs:
         uses: docker/metadata-action@v6
         with:
           images: ulysseszhan/sunniesnow-record
+          flavor: |
+            suffix=${{ matrix.suffix }},onlatest=true
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
         with:
           context: .
+          file: ${{ matrix.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Update Docker Hub repo description
         uses: peter-evans/dockerhub-description@v5
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master' && matrix.suffix == ''
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
