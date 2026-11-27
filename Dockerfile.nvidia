@@ -1,10 +1,12 @@
 # syntax=docker/dockerfile:1
-# NOT USABLE YET
-FROM nvidia/cuda:12.8.1-base-ubuntu24.04
+FROM nvidia/cuda:13.5.0-base-ubuntu26.04
+
+# NVENC needs the host's video driver libraries in addition to CUDA.
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility,video
 
 RUN apt-get -y update && apt-get -y upgrade
 RUN apt-get install -y curl
-RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
+RUN curl -fsSL https://deb.nodesource.com/setup_26.x | bash -
 RUN apt-get install -y nodejs
 RUN apt-get install -y libasound2-dev ffmpeg
 RUN apt-get install -y python-is-python3
@@ -12,9 +14,12 @@ RUN apt-get install -y build-essential pkg-config
 RUN apt-get install -y libxi-dev libglu1-mesa-dev libglew-dev xvfb
 RUN apt-get install -y libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 
+# Build native addons with GCC rather than inheriting Node.js's Clang/LTO flags.
+ENV npm_config_clang=0 npm_config_enable_lto=false npm_config_enable_thin_lto=false
+
 WORKDIR /app
 COPY . .
-RUN npm ci
+RUN npm ci --ignore-scripts
 RUN npm rebuild canvas --build-from-source
 RUN npm rebuild gl --build-from-source
 RUN npm link
